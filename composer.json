@@ -1,0 +1,13 @@
+{
+    "name": "nazarioa/niztech-youtube",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Nazario A. Ayala",
+            "email": "nazario@niztech.com"
+        }
+    ],
+    "require": {
+        "google/apiclient": "^2.2"
+    }
+}
