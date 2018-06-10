@@ -6,13 +6,14 @@
  * Time: 3:45 PM
  */
 
-namespace Niztech\Youtube;
-
 
 class Niztech_Youtube_Admin {
 
 
 	public function __construct() {
+	}
+
+	public function init() {
 	}
 
 	public static function initOptions() {

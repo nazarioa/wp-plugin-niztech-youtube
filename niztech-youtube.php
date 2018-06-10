@@ -19,6 +19,20 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'NT_YOUTUBE_VERSION', '1.0.0' );
+define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.0.0' );
+define( 'NT_YOUTUBE_DATABASE_VERSION', 1 );
 define( 'NT_YOUTUBE__MINIMUM_WP_VERSION', '4.0' );
 define( 'NT_YOUTUBE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+
+register_activation_hook( __FILE__, array( 'Niztech_Youtube', 'plugin_activation' ) );
+register_deactivation_hook( __FILE__, array( 'Niztech_Youtube', 'plugin_deactivation' ) );
+
+// Add class files who have hooks that are referenced in this file.
+require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube.class.php' );
+
+add_action( 'init', array( 'Niztech_Youtube', 'init' ) );
+
+if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Admin.class.php' );
+	add_action( 'init', array( 'Niztech_Youtube_Admin', 'init' ) );
+}
