@@ -25,7 +25,7 @@ class Niztech_Youtube {
 	public static function plugin_activation() {
 		self::niztech_youtube_create_table_playlist();
 		self::niztech_youtube_create_table_video();
-		add_option( PLUGIN_PREFIX . 'db_version', NT_YOUTUBE_DATABASE_VERSION );
+		add_option( self::PLUGIN_PREFIX . 'db_version', NT_YOUTUBE_DATABASE_VERSION );
 	}
 
 	public static function plugin_deactivation() {
