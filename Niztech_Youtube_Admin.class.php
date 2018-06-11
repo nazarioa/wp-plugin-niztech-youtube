@@ -14,6 +14,7 @@ class Niztech_Youtube_Admin {
 	}
 
 	public function init() {
+		add_action( 'admin_menu', array( 'Niztech_Youtube_Admin', 'admin_menu' ), 3 );
 		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_resources' ) );
 	}
 
@@ -56,6 +57,30 @@ class Niztech_Youtube_Admin {
 		);
 
 		return ( $response );
+	}
+
+	public static function admin_menu() {
+		add_options_page(
+			__( 'Niztech YouTube', 'niztech_youtube' ),
+			__( 'Niztech YouTube', 'niztech_youtube' ),
+			'manage_options',
+			'niztech-youtube-config',
+			array( 'Niztech_Youtube_Admin', 'config_page_render' )
+		);
+	}
+
+	public static function config_page_render() {
+		// Prerender,
+		//		if ( !Akismet::get_api_key() || ( isset( $_GET['view'] ) && $_GET['view'] == 'start' ) )
+		//			self::display_start_page();
+		//		elseif ( isset( $_GET['view'] ) && $_GET['view'] == 'stats' )
+		//			self::display_stats_page();
+		// endif
+
+		//		$api_key = Niztech_Youtube::get_youtube_api_key();
+		//		apply_filters( 'akismet_view_arguments', $api_key, 'config' );
+		//		load_plugin_textdomain( 'niztech_youtube' );
+		include( NT_YOUTUBE__PLUGIN_DIR . '/views/config.php' );
 	}
 }
 
