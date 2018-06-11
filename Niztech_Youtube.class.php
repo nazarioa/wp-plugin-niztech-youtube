@@ -11,10 +11,17 @@ class Niztech_Youtube {
 	const PLUGIN_TEXT_DOMAIN = 'niztech_youtube';
 
 	private static $initiated = false;
+	private static $notices = array();
+
+	private static $youtube_v3_api_key = '';
 
 	public static function init() {
 		if ( ! self::$initiated ) {
 			self::init_hooks();
+		}
+
+		if ( isset( $_POST['action'] ) && $_POST['action'] == 'enter-key' ) {
+			self::enter_api_key();
 		}
 	}
 
@@ -29,6 +36,58 @@ class Niztech_Youtube {
 	}
 
 	public static function plugin_deactivation() {
+	}
+
+	public static function enter_api_key() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die( __( 'Cheatin&#8217; uh?', self::PLUGIN_TEXT_DOMAIN ) );
+		}
+
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], Niztech_Youtube_Admin::NONCE ) ) {
+			return false;
+		}
+
+		$new_key = trim( $_POST['niztech-youtube-api'] );
+		$old_key = self::get_youtube_api_key();
+
+		if ( empty( $new_key ) ) {
+			if ( ! empty( $old_key ) ) {
+				delete_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key' );
+				self::$notices[] = 'new-key-empty';
+			}
+		} elseif ( $new_key != $old_key ) {
+			self::set_youtube_api_key( $new_key );
+		}
+
+		return true;
+	}
+
+	public static function get_youtube_api_key() {
+		if ( ! empty( self::$youtube_v3_api_key ) ) {
+			return self::$youtube_v3_api_key;
+		}
+
+		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key . '' );
+	}
+
+	public static function set_youtube_api_key( $api_key ) {
+		$key_status = self::verify_key( $api_key );
+		if ( $key_status === 'valid' ) {
+			self::$notices['status']  = 'key-valid';
+			self::$youtube_v3_api_key = $api_key;
+			update_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', $api_key );
+		} else {
+			self::$notices['status'] = 'key-not-valid';
+		}
+	}
+
+	public static function verify_key( $api_key ) {
+		// TODO: Improve on this code.
+		if ( ! empty( $api_key ) ) {
+			return 'valid';
+		}
+
+		return 'not-valid';
 	}
 
 	public static function niztech_youtube_create_table_playlist() {

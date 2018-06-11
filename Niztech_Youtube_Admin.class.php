@@ -8,7 +8,7 @@
 
 
 class Niztech_Youtube_Admin {
-
+	const NONCE = 'niztech-update-key';
 
 	public function __construct() {
 	}
@@ -32,16 +32,22 @@ class Niztech_Youtube_Admin {
 		}
 	}
 
-	public static function initOptions() {
-	}
+	public static function get_page_url( $page = 'config' ) {
 
-	public static function hasApiKey() {
-	}
+		$args = array( 'page' => 'niztech-youtube-config' );
 
-	public static function apiKeyFromDb() {
-	}
+		if ( $page == 'delete_key' ) {
+			$args = array(
+				'page'     => 'niztech-youtube-config',
+				'view'     => 'config',
+				'action'   => 'delete-key',
+				'_wpnonce' => wp_create_nonce( self::NONCE )
+			);
+		}
 
-	public static function ntYoutubePluginMenu() {
+		$url = add_query_arg( $args, admin_url( 'options-general.php' ) );
+
+		return $url;
 	}
 
 	public static function safeGet( $array, $key, $default = null ) {
