@@ -14,6 +14,22 @@ class Niztech_Youtube_Admin {
 	}
 
 	public function init() {
+		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_resources' ) );
+	}
+
+	public static function load_resources() {
+		global $hook_suffix;
+		if ( in_array( $hook_suffix, apply_filters( 'niztech_youtube_admin_page_hook_suffixes', array(
+			'index.php', # dashboard
+			'post.php',
+			'jetpack_page_akismet-key-config',
+			'settings_page_niztech-youtube-config',
+			'plugins.php',
+		) ) ) ) {
+			wp_register_style( 'niztech_youtube.css', plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube.css', array(),
+				NT_YOUTUBE_PLUGIN_VERSION );
+			wp_enqueue_style( 'niztech_youtube.css' );
+		}
 	}
 
 	public static function initOptions() {
