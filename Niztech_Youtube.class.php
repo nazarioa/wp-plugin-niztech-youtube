@@ -8,6 +8,8 @@
 
 class Niztech_Youtube {
 	const PLUGIN_PREFIX = 'niztech_youtube_';
+	const PLUGIN_TEXT_DOMAIN = 'niztech_youtube';
+
 	private static $initiated = false;
 
 	public static function init() {

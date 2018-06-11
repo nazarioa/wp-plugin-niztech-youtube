@@ -61,8 +61,8 @@ class Niztech_Youtube_Admin {
 
 	public static function admin_menu() {
 		add_options_page(
-			__( 'Niztech YouTube', 'niztech_youtube' ),
-			__( 'Niztech YouTube', 'niztech_youtube' ),
+			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
+			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
 			'manage_options',
 			'niztech-youtube-config',
 			array( 'Niztech_Youtube_Admin', 'config_page_render' )
