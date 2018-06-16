@@ -54,7 +54,7 @@ class Niztech_Youtube_Admin {
 		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
 	}
 
-	public static function playlistItemsListByPlaylistId( $service, $part, $params ) {
+	public static function playlist_items_list_by_playlist_Id( $service, $part, $params ) {
 		$params   = array_filter( $params );
 		$response = $service->playlistItems->listPlaylistItems(
 			$part,
