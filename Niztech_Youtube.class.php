@@ -30,8 +30,8 @@ class Niztech_Youtube {
 	}
 
 	public static function plugin_activation() {
-		self::niztech_youtube_create_table_playlist();
-		self::niztech_youtube_create_table_video();
+		self::create_table_playlist();
+		self::create_table_video();
 		add_option( self::PLUGIN_PREFIX . 'db_version', NT_YOUTUBE_DATABASE_VERSION );
 	}
 
@@ -90,7 +90,7 @@ class Niztech_Youtube {
 		return 'not-valid';
 	}
 
-	public static function niztech_youtube_create_table_playlist() {
+	public static function create_table_playlist() {
 		global $wpdb;
 		$table_name      = $wpdb->prefix . 'niztech_youtube_playlists';
 		$charset_collate = $wpdb->get_charset_collate();
@@ -106,7 +106,7 @@ class Niztech_Youtube {
 		dbDelta( $sql );
 	}
 
-	public static function niztech_youtube_create_table_video() {
+	public static function create_table_video() {
 		global $wpdb;
 		$table_name      = $wpdb->prefix . 'niztech_youtube_videos';
 		$charset_collate = $wpdb->get_charset_collate();
