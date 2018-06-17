@@ -76,10 +76,7 @@ class Niztech_Youtube_Admin {
 
 	public static function config_page_render() {
 		include( NT_YOUTUBE__PLUGIN_DIR . '/views/config.php' );
+//		print_r(self::playlist_items_list_by_playlist_Id( Niztech_Youtube::$google_service, 'snippet,contentDetails',
+//			array( 'maxResults' => '', 'playlistId' => 'PLhTSRIqkFBz5go_OZP63nw-NXEnSKELHk' ) ));
 	}
 }
-
-/*
-NiztechYoutubeAdmin::playlistItemsListByPlaylistId( $service, 'snippet,contentDetails',
-	array( 'maxResults' => '', 'playlistId' => 'PLhTSRIqkFBz5go_OZP63nw-NXEnSKELHk' ) );
-*/

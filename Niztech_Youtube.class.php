@@ -10,6 +10,8 @@ class Niztech_Youtube {
 	const PLUGIN_PREFIX = 'niztech_youtube_';
 	const PLUGIN_TEXT_DOMAIN = 'niztech_youtube';
 
+	public static $google_service = null;
+
 	private static $initiated = false;
 	private static $notices = array();
 
@@ -27,6 +29,11 @@ class Niztech_Youtube {
 
 	public static function init_hooks() {
 		self::$initiated = true;
+		try {
+			self::setup_youtube_google_client();
+		} catch ( \Exception $e ) {
+			self::$notices[] = 'Could not setup connection to google, No API Key configured';
+		}
 	}
 
 	public static function plugin_activation() {
@@ -135,6 +142,18 @@ class Niztech_Youtube {
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
+	}
+
+	public static function setup_youtube_google_client() {
+		$api = self::get_youtube_api_key();
+		if ( empty( $api ) ) {
+			throw new Exception( __( 'Niztech Youtube could not configured.', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ) );
+		}
+
+		$client = new Google_Client();
+		$client->setApplicationName( 'Niztech Youtube' );
+		$client->setDeveloperKey( $api );
+		self::$google_service = new Google_Service_YouTube( $client );
 	}
 
 }
