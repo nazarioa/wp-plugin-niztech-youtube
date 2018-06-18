@@ -16,6 +16,7 @@ class Niztech_Youtube {
 
 	private static $initiated = false;
 	private static $notices = array();
+	private static $video_stale_limit_days = 3;
 
 	private static $youtube_v3_api_key = '';
 
