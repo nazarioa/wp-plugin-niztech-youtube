@@ -106,6 +106,21 @@ class Niztech_Youtube {
 			youtube_playlist_url varchar(100) DEFAULT '' NOT NULL,
 			title tinytext NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			thumbnail_default_url varchar(255),
+			thumbnail_default_width int(4),
+			thumbnail_default_height int(4),
+			thumbnail_medium_url varchar(255),
+			thumbnail_medium_width int(4),
+			thumbnail_medium_height int(4),
+			thumbnail_high_url varchar(255),
+			thumbnail_high_width int(4),
+			thumbnail_high_height int(4),
+			thumbnail_standard_url varchar(255),
+			thumbnail_standard_width int(4),
+			thumbnail_standard_height int(4),
+			thumbnail_maxres_url varchar(255),
+			thumbnail_maxres_width int(4),
+			thumbnail_maxres_height int(4),
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
