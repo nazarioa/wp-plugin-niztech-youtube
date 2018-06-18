@@ -106,6 +106,7 @@ class Niztech_Youtube {
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			youtube_playlist_code varchar(255) NOT NULL,
 			youtube_playlist_url varchar(100) DEFAULT '' NOT NULL,
 			title tinytext NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -137,7 +138,8 @@ class Niztech_Youtube {
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			youtube_video_id varchar(55) DEFAULT '' NOT NULL,
+			playlist_id mediumint(9) DEFAULT '' NOT NULL,
+			youtube_video_code varchar(255) DEFAULT '' NOT NULL,
 			title tinytext NOT NULL,
 			last_update datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			thumbnail_default_url varchar(255),
@@ -178,6 +180,100 @@ class Niztech_Youtube {
 		return ( $response );
 	}
 
+
+	/**
+	 * ref: https://codex.wordpress.org/Creating_Tables_with_Plugins
+	 *
+	 * @param $playlist_id
+	 * @param $data
+	 */
+	public static function commit_playlist_data_to_wp( $playlist_id, array $data ) {
+		global $wpdb;
+		$to_commit = array();
+
+		// Remove existing data
+		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
+
+		// Take $data and stores it into database
+		foreach ( $data as $datum ) {
+			$generic_video_data = array(
+				'playlist_id'        => $playlist_id,
+				'title'              => $datum->snippet->title,
+				'youtube_video_code' => $datum->snippet->resourceId->videoId,
+			);
+
+			$thumbnails  = self::process_Google_Service_YouTube_ThumbnailDetails( $datum->snippet->thumbnails );
+			$to_commit[] = array_merge( $generic_video_data, $thumbnails );
+		}
+
+		// TODO: Not clobber video titles if they have been set to display differently.
+		foreach ( $to_commit as $row ) {
+			$wpdb->insert( $wpdb->prefix . self::TBL_VIDEOS, $row );
+		}
+
+		$today = new DateTime();
+
+		$wpdb->update( $wpdb->prefix . self::TBL_PLAYLIST,
+			array( 'last_refresh' => $today->format( 'Y-m-d H:i:s' ) ), //2018-06-14 23:08:15
+			array( 'id' => $playlist_id )
+		);
+	}
+
+
+	/**
+	 * Queries the local database for playlist data. If the data is older than a few days
+	 * make the request back to google
+	 *
+	 * @param string $youtube_playlist_code
+	 * @param bool $bypass_cached_data
+	 *
+	 * @return array of objects
+	 */
+	public static function get_playlist_info_for( $youtube_playlist_code = '', $bypass_cached_data = false ) {
+		global $wpdb;
+
+		// Query cached data
+		$playlist_entry = $wpdb->get_row( 'SELECT id, last_refresh ' .
+		                                  'FROM ' . $wpdb->prefix . self::TBL_PLAYLIST . ' ' .
+		                                  'WHERE youtube_playlist_code = "' . $youtube_playlist_code . '";', 'OBJECT' );
+
+		// if days since $last_refresh > $video_stale_limit_days, set $bypass_cached_data = true
+		$last_refresh = new DateTime( $playlist_entry->last_refresh );
+		$today        = new DateTime();
+		if ( empty( $last_refresh ) || $today->diff( $last_refresh )->days > self::$video_stale_limit_days ) {
+			$bypass_cached_data = true;
+		}
+
+		if ( $bypass_cached_data ) {
+			$raw_data = self::query_playlist_data_from_youtube( $youtube_playlist_code );
+			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
+			self::commit_playlist_data_to_wp( $playlist_entry->id, $raw_data->items );
+		}
+
+		$playlist_data = array();
+		// Query video data.
+		if ( ! empty( $playlist_entry->id ) ) {
+			$playlist_data = $wpdb->get_results( 'SELECT * ' .
+			                                     'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
+			                                     'WHERE playlist_id = "' . $playlist_entry->id . '";' );
+		}
+
+		// returns an array of objects
+		return $playlist_data;
+	}
+
+	public static function process_Google_Service_YouTube_ThumbnailDetails( $thumbnail_details ) {
+		$results         = array();
+		$thumbnail_types = array( 'default', 'medium', 'high', 'standard', 'maxres' );
+		foreach ( $thumbnail_types as $type ) {
+			$results[ 'thumbnail_' . $type . '_url' ]    = $thumbnail_details->$type->url;
+			$results[ 'thumbnail_' . $type . '_width' ]  = $thumbnail_details->$type->width;
+			$results[ 'thumbnail_' . $type . '_height' ] = $thumbnail_details->$type->height;
+		}
+
+		return $results;
+	}
+
 	public static function setup_youtube_google_client() {
 		$api = self::get_youtube_api_key();
 		if ( empty( $api ) ) {
@@ -189,5 +285,4 @@ class Niztech_Youtube {
 		$client->setDeveloperKey( $api );
 		self::$google_service = new Google_Service_YouTube( $client );
 	}
-
 }
