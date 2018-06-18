@@ -9,6 +9,8 @@
 class Niztech_Youtube {
 	const PLUGIN_PREFIX = 'niztech_youtube_';
 	const PLUGIN_TEXT_DOMAIN = 'niztech_youtube';
+	const TBL_PLAYLIST = 'niztech_youtube_playlists';
+	const TBL_VIDEOS = 'niztech_youtube_videos';
 
 	public static $google_service = null;
 
@@ -99,7 +101,7 @@ class Niztech_Youtube {
 
 	public static function create_table_playlist() {
 		global $wpdb;
-		$table_name      = $wpdb->prefix . 'niztech_youtube_playlists';
+		$table_name      = $wpdb->prefix . TBL_PLAYLIST;
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -130,7 +132,7 @@ class Niztech_Youtube {
 
 	public static function create_table_video() {
 		global $wpdb;
-		$table_name      = $wpdb->prefix . 'niztech_youtube_videos';
+		$table_name      = $wpdb->prefix . TBL_VIDEOS;
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
