@@ -144,6 +144,22 @@ class Niztech_Youtube {
 		dbDelta( $sql );
 	}
 
+	/**
+	 * @param $part
+	 * @param $params
+	 *
+	 * @return mixed
+	 */
+	public static function query_youtube_listPlaylistItems( $part, $params ) {
+		$params   = array_filter( $params );
+		$response = self::$google_service->playlistItems->listPlaylistItems(
+			$part,
+			$params
+		);
+
+		return ( $response );
+	}
+
 	public static function setup_youtube_google_client() {
 		$api = self::get_youtube_api_key();
 		if ( empty( $api ) ) {

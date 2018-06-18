@@ -50,16 +50,6 @@ class Niztech_Youtube_Admin {
 		return $url;
 	}
 
-	public static function playlist_items_list_by_playlist_Id( $service, $part, $params ) {
-		$params   = array_filter( $params );
-		$response = $service->playlistItems->listPlaylistItems(
-			$part,
-			$params
-		);
-
-		return ( $response );
-	}
-
 	public static function admin_menu() {
 		add_options_page(
 			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
