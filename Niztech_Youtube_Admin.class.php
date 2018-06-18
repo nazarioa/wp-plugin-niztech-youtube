@@ -50,10 +50,6 @@ class Niztech_Youtube_Admin {
 		return $url;
 	}
 
-	public static function safeGet( $array, $key, $default = null ) {
-		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
-	}
-
 	public static function playlist_items_list_by_playlist_Id( $service, $part, $params ) {
 		$params   = array_filter( $params );
 		$response = $service->playlistItems->listPlaylistItems(
