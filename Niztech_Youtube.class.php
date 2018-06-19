@@ -191,7 +191,6 @@ class Niztech_Youtube {
 		return ( $response );
 	}
 
-
 	/**
 	 * ref: https://codex.wordpress.org/Creating_Tables_with_Plugins
 	 *
