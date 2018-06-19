@@ -165,6 +165,17 @@ class Niztech_Youtube {
 	}
 
 	/**
+	 * @param $youtube_playlist_code
+	 *
+	 * @return mixed
+	 */
+	public static function query_playlist_data_from_youtube( $youtube_playlist_code ) {
+		return self::query_youtube_listPlaylistItems( 'snippet,contentDetails',
+			array( 'maxResults' => '', 'playlistId' => $youtube_playlist_code )
+		);
+	}
+
+	/**
 	 * @param $part
 	 * @param $params
 	 *
