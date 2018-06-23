@@ -129,22 +129,21 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ) {
-		wp_nonce_field( basename( __FILE__ ), 'smashing_post_class_nonce' ); ?>
+		wp_nonce_field( basename( __FILE__ ), 'smashing_post_class_nonce' );
+		$type = self::video_source_get_meta( 'niztech_video_youtube_type' ) ?>
 
         <p>
             <label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
             <input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url"
-                   value="<?php echo self::video_source_get_meta( 'niztech_video_youtube_url' ); ?>">
-            <input type="hidden" name="niztech_video_source_foreign_key" id="niztech_video_source_foreign_key"
-                   value="<?php echo self::video_source_get_meta( 'niztech_video_source_foreign_key' ); ?>">
+                   value="<?php echo Niztech_Youtube::get_video_or_playlist_code( $type, $post->ID ); ?>">
         </p>
         <p>
             <label for="niztech_video_youtube_type"><?php _e( 'Type', 'video_source' ); ?></label><br>
             <select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
-                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) == self::TYPE_OPTION_PLAYLIST ) ? 'selected' : '' ?>>
+                <option <?php echo ( $type == self::TYPE_OPTION_PLAYLIST ) ? 'selected' : '' ?>>
                     Playlist
                 </option>
-                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) == self::TYPE_OPTION_VIDEO ) ? 'selected' : '' ?>>
+                <option <?php echo ( $type == self::TYPE_OPTION_VIDEO ) ? 'selected' : '' ?>>
                     Single Video
                 </option>
             </select>
