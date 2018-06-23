@@ -106,6 +106,7 @@ class Niztech_Youtube_Admin {
 		$youtube_type  = esc_attr( $_POST['niztech_video_youtube_type'] );
 		$youtube_nonce = esc_attr( $_POST['niztech_video_source_nonce'] );
 
+		// Dont want to save any data if the user does not intend it.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
@@ -115,6 +116,8 @@ class Niztech_Youtube_Admin {
 				Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA ) ) {
 			return;
 		}
+
+		// Validate that the user has permissions
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
