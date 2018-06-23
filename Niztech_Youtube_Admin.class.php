@@ -10,6 +10,9 @@
 class Niztech_Youtube_Admin {
 	const NONCE = 'niztech-update-key';
 
+	const TYPE_OPTION_PLAYLIST = 'Playlist';
+	const TYPE_OPTION_VIDEO = 'Single Video';
+
 	public function __construct() {
 	}
 
@@ -138,10 +141,10 @@ class Niztech_Youtube_Admin {
         <p>
             <label for="niztech_video_youtube_type"><?php _e( 'Type', 'video_source' ); ?></label><br>
             <select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
-                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) === 'Playlist' ) ? 'selected' : '' ?>>
+                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) == self::TYPE_OPTION_PLAYLIST ) ? 'selected' : '' ?>>
                     Playlist
                 </option>
-                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) === 'Single Video' ) ? 'selected' : '' ?>>
+                <option <?php echo ( self::video_source_get_meta( 'niztech_video_youtube_type' ) == self::TYPE_OPTION_VIDEO ) ? 'selected' : '' ?>>
                     Single Video
                 </option>
             </select>
