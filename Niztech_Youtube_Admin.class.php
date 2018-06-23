@@ -77,10 +77,13 @@ class Niztech_Youtube_Admin {
 		add_action( 'add_meta_boxes', array( 'Niztech_Youtube_Admin', 'metabox_video_source_playlist' ) );
 	}
 
-	public static function video_source_get_meta( $value ) {
-		global $post;
+	public static function video_source_get_meta( $value, $post_id = null ) {
+		if ( empty( $post_id ) ) {
+			global $post;
+			$post_id = $post->ID;
+		}
 
-		$field = get_post_meta( $post->ID, $value, true );
+		$field = get_post_meta( $post_id, $value, true );
 		if ( ! empty( $field ) ) {
 			return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
 		} else {
