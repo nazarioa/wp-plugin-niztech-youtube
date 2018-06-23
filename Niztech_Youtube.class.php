@@ -53,7 +53,7 @@ class Niztech_Youtube {
 			die( __( 'Cheatin&#8217; uh?', self::PLUGIN_TEXT_DOMAIN ) );
 		}
 
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], Niztech_Youtube_Admin::NONCE ) ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], Niztech_Youtube_Admin::NONCE_UPDATE_KEY ) ) {
 			return false;
 		}
 

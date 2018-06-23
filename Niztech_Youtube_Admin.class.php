@@ -8,10 +8,11 @@
 
 
 class Niztech_Youtube_Admin {
-	const NONCE = 'niztech-update-key';
 
 	const TYPE_OPTION_PLAYLIST = 'Playlist';
 	const TYPE_OPTION_VIDEO = 'Single Video';
+	const NONCE_UPDATE_KEY = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
+	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';
 
 	public function __construct() {
 	}
@@ -50,7 +51,7 @@ class Niztech_Youtube_Admin {
 				'page'     => 'niztech-youtube-config',
 				'view'     => 'config',
 				'action'   => 'delete-key',
-				'_wpnonce' => wp_create_nonce( self::NONCE )
+				'_wpnonce' => wp_create_nonce( Niztech_Youtube_Admin::NONCE_UPDATE_KEY )
 			);
 		}
 
@@ -113,7 +114,10 @@ class Niztech_Youtube_Admin {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-		if ( ! isset( $_POST['niztech_video_source_nonce'] ) || ! wp_verify_nonce( $youtube_nonce, '_niztech_video_source_nonce' ) ) {
+
+		// Validate that the input is good.
+		if ( ! isset( $_POST['niztech_video_source_nonce'] ) || ! wp_verify_nonce( $youtube_nonce,
+				Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA ) ) {
 			return;
 		}
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -129,8 +133,8 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ) {
-		wp_nonce_field( basename( __FILE__ ), 'smashing_post_class_nonce' );
 		$type = self::video_source_get_meta( 'niztech_video_youtube_type' ) ?>
+		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
 
         <p>
             <label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
