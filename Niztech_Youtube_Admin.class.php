@@ -103,13 +103,10 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function video_source_save( $post_id ) {
-		$youtube_url         = esc_attr( $_POST['niztech_video_youtube_url'] );
-		$youtube_type        = esc_attr( $_POST['niztech_video_youtube_type'] );
-		$youtube_foreign_key = esc_attr( $_POST['niztech_video_source_foreign_key'] );
-		$youtube_nonce       = esc_attr( $_POST['niztech_video_source_nonce'] );
-
 		print_r( array($youtube_url, $youtube_type, $youtube_foreign_key, $youtube_nonce) );
-
+		$youtube_url   = esc_attr( $_POST['niztech_video_youtube_url'] );
+		$youtube_type  = esc_attr( $_POST['niztech_video_youtube_type'] );
+		$youtube_nonce = esc_attr( $_POST['niztech_video_source_nonce'] );
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
