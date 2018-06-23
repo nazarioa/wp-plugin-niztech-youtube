@@ -8,9 +8,6 @@
 
 
 class Niztech_Youtube_Admin {
-
-	const TYPE_OPTION_PLAYLIST = 'Playlist';
-	const TYPE_OPTION_VIDEO = 'Single Video';
 	const NONCE_UPDATE_KEY = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
 	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';
 
@@ -129,8 +126,9 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ) {
-		$type = self::video_source_get_meta( 'niztech_video_youtube_type' ) ?>
 		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
+		$type = Niztech_Youtube_Admin::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
+		?>
 
         <p>
             <label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
@@ -140,10 +138,10 @@ class Niztech_Youtube_Admin {
         <p>
             <label for="niztech_video_youtube_type"><?php _e( 'Type', 'video_source' ); ?></label><br>
             <select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
-                <option <?php echo ( $type == self::TYPE_OPTION_PLAYLIST ) ? 'selected' : '' ?>>
+                <option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : '' ?>>
                     Playlist
                 </option>
-                <option <?php echo ( $type == self::TYPE_OPTION_VIDEO ) ? 'selected' : '' ?>>
+                <option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : '' ?>>
                     Single Video
                 </option>
             </select>

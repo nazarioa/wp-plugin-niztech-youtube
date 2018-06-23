@@ -11,6 +11,8 @@ class Niztech_Youtube {
 	const PLUGIN_TEXT_DOMAIN = 'niztech_youtube';
 	const TBL_PLAYLIST = 'niztech_youtube_playlists';
 	const TBL_VIDEOS = 'niztech_youtube_videos';
+	const TYPE_OPTION_PLAYLIST = 'Playlist';
+	const TYPE_OPTION_VIDEO = 'Single Video';
 
 	public static $google_service = null;
 
