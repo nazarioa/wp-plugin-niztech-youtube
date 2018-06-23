@@ -312,4 +312,24 @@ class Niztech_Youtube {
 		$table_name = $wpdb->prefix . self::TBL_VIDEOS;
 		$wpdb->delete( $table_name, array( 'post_id' => $post_id ) );
 	}
+
+	public static function get_video_or_playlist_code( $type, $post_id ) {
+		global $wpdb;
+
+		if ( empty( $type ) || empty( $post_id ) ) {
+			return '';
+		} elseif ( $type == self::TYPE_OPTION_PLAYLIST ) {
+			$video_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
+
+			return $wpdb->get_row( 'SELECT youtube_playlist_code FROM ' . $video_tbl_name . ' WHERE post_id  = ' . $post_id,
+				'OBJECT' )->youtube_video_code;
+
+		} elseif ( $type == self::TYPE_OPTION_VIDEO ) {
+			$video_tbl_name = $wpdb->prefix . self::TBL_VIDEOS;
+
+			return $wpdb->get_row( 'SELECT youtube_video_code FROM ' . $video_tbl_name . ' WHERE post_id  = ' . $post_id,
+				'OBJECT' )->youtube_video_code;
+		}
+	}
+
 }
