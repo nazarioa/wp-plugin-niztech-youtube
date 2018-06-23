@@ -106,6 +106,7 @@ class Niztech_Youtube {
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			post_id bigint(20) NOT NULL,
 			youtube_playlist_code varchar(255) NOT NULL,
 			youtube_playlist_url varchar(100) DEFAULT '' NOT NULL,
 			title tinytext NOT NULL,
@@ -139,6 +140,7 @@ class Niztech_Youtube {
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			playlist_id mediumint(9) DEFAULT '' NOT NULL,
+			post_id bigint(20),
 			youtube_video_code varchar(255) DEFAULT '' NOT NULL,
 			title tinytext NOT NULL,
 			last_update datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -294,5 +296,20 @@ class Niztech_Youtube {
 		$client->setApplicationName( 'Niztech Youtube' );
 		$client->setDeveloperKey( $api );
 		self::$google_service = new Google_Service_YouTube( $client );
+	}
+
+	public static function remove_playlists_for_post( $post_id ) {
+		global $wpdb;
+		$playlist_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
+		$playlist_id       = $wpdb->get_row( 'SELECT id FROM ' . $playlist_tbl_name . ' WHERE post_id => ' . $post_id,
+			'OBJECT' )->id;
+		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
+		$wpdb->delete( $playlist_tbl_name, array( 'post_id' => $post_id ) );
+	}
+
+	public static function remove_videos_for_post( $post_id ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::TBL_VIDEOS;
+		$wpdb->delete( $table_name, array( 'post_id' => $post_id ) );
 	}
 }
