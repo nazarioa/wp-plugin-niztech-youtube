@@ -196,19 +196,25 @@ class Niztech_Youtube {
 	 * ref: https://codex.wordpress.org/Creating_Tables_with_Plugins
 	 *
 	 * @param $playlist_id
-	 * @param $data
+	 * @param $post_id
+	 * @param array $data
 	 */
-	public static function commit_playlist_data_to_wp( $playlist_id, array $data ) {
+	public static function commit_playlist_data_to_wp( $playlist_id, $post_id, array $data ) {
 		global $wpdb;
 		$to_commit = array();
 
+		if ( empty( $playlist_id ) || empty( $post_id ) ) {
+			return;
+		}
+
 		// Remove existing data
-		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
+		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'post_id' => $post_id ) );
 
 		// Take $data and stores it into database
 		foreach ( $data as $datum ) {
 			$generic_video_data = array(
 				'playlist_id'        => $playlist_id,
+				'post_id'            => $post_id,
 				'title'              => $datum->snippet->title,
 				'youtube_video_code' => $datum->snippet->resourceId->videoId,
 			);
@@ -266,41 +272,80 @@ class Niztech_Youtube {
 	 * make the request back to google
 	 *
 	 * @param string $youtube_playlist_code
+	 * @param $post_id
 	 * @param bool $bypass_cached_data
 	 *
 	 * @return array of objects
 	 */
-	public static function get_playlist_info_for( $youtube_playlist_code = '', $bypass_cached_data = false ) {
+	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ) {
 		global $wpdb;
 
 		// Query cached data
-		$playlist_entry = $wpdb->get_row( 'SELECT id, last_refresh ' .
-		                                  'FROM ' . $wpdb->prefix . self::TBL_PLAYLIST . ' ' .
-		                                  'WHERE youtube_playlist_code = "' . $youtube_playlist_code . '";', 'OBJECT' );
+		$foreign_id = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( Niztech_Youtube::TYPE_OPTION_PLAYLIST,
+			$post_id )->id;
 
-		// if days since $last_refresh > $video_stale_limit_days, set $bypass_cached_data = true
-		$last_refresh = new DateTime( $playlist_entry->last_refresh );
-		$today        = new DateTime();
-		if ( empty( $last_refresh ) || $today->diff( $last_refresh )->days > self::$video_stale_limit_days ) {
-			$bypass_cached_data = true;
+		if ( empty( $foreign_id ) ) {
+			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code );
+		}
+
+		$existing_playlist = Niztech_Youtube::get_local_playlist_row( $foreign_id );
+
+		if ( ! empty( $existing_playlist->last_refresh ) ) {
+			// if days since $last_refresh > $video_stale_limit_days, set $bypass_cached_data = true
+			$last_refresh = new DateTime( $existing_playlist->last_refresh );
+			$today        = new DateTime();
+			if ( empty( $last_refresh ) || $today->diff( $last_refresh )->days > self::$video_stale_limit_days ) {
+				$bypass_cached_data = true;
+			}
 		}
 
 		if ( $bypass_cached_data ) {
-			$raw_data = self::query_playlist_data_from_youtube( $youtube_playlist_code );
+			$raw_data = Niztech_Youtube::query_playlist_data_from_youtube( $youtube_playlist_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
-			self::commit_playlist_data_to_wp( $playlist_entry->id, $raw_data->items );
+			if ( ! empty( $raw_data->items ) ) {
+				Niztech_Youtube::commit_playlist_data_to_wp( $foreign_id, $post_id, $raw_data->items );
+			}
 		}
 
 		$playlist_data = array();
 		// Query video data.
-		if ( ! empty( $playlist_entry->id ) ) {
-			$playlist_data = $wpdb->get_results( 'SELECT * ' .
-			                                     'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
-			                                     'WHERE playlist_id = "' . $playlist_entry->id . '";' );
+		if ( ! empty( $existing_playlist->id ) ) {
+			$playlist_data = $wpdb->get_row( 'SELECT * ' .
+			                                 'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
+			                                 'WHERE playlist_id = "' . $existing_playlist->id . '";' );
 		}
 
 		// returns an array of objects
 		return $playlist_data;
+	}
+
+	/**
+	 * @param $foreign_id
+	 *
+	 * @return mixed
+	 */
+	public static function get_local_playlist_row( $foreign_id ) {
+		global $wpdb;
+		$query = 'SELECT * ' .
+		         'FROM ' . $wpdb->prefix . self::TBL_PLAYLIST . ' ' .
+		         "WHERE id = \"$foreign_id\"";
+
+		return $wpdb->get_row( $query, 'OBJECT' );
+	}
+
+	public static function create_empty_local_playlist_row( $post_id, $playlist_code ) {
+		global $wpdb;
+		$today = new DateTime();
+
+		$wpdb->insert( $wpdb->prefix . self::TBL_PLAYLIST,
+			array(
+				'post_id'               => $post_id,
+				'youtube_playlist_code' => $playlist_code,
+				'last_refresh'          => $today->format( 'Y-m-d H:i:s' )
+			)
+		);
+
+		return $wpdb->insert_id;
 	}
 
 	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ) {
@@ -352,9 +397,9 @@ class Niztech_Youtube {
 	public static function remove_playlists_for_post( $post_id ) {
 		global $wpdb;
 		$playlist_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
-		$playlist_id       = $wpdb->get_row( 'SELECT id FROM ' . $playlist_tbl_name . ' WHERE post_id => ' . $post_id,
-			'OBJECT' )->id;
-		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
+		$query             = 'SELECT id FROM ' . $playlist_tbl_name . ' WHERE post_id = ' . $post_id;
+		$playlist_id       = $wpdb->get_row( $query, 'OBJECT' )->id;
+		$wpdb->delete( $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
 		$wpdb->delete( $playlist_tbl_name, array( 'post_id' => $post_id ) );
 	}
 
