@@ -174,22 +174,9 @@ class Niztech_Youtube {
 	 * @return mixed
 	 */
 	public static function query_playlist_data_from_youtube( $youtube_playlist_code ) {
-		return self::query_youtube_listPlaylistItems( 'snippet,contentDetails',
-			array( 'maxResults' => '', 'playlistId' => $youtube_playlist_code )
-		);
-	}
-
-	/**
-	 * @param $part
-	 * @param $params
-	 *
-	 * @return mixed
-	 */
-	public static function query_youtube_listPlaylistItems( $part, $params ) {
-		$params   = array_filter( $params );
 		$response = self::$google_service->playlistItems->listPlaylistItems(
-			$part,
-			$params
+			'snippet,contentDetails',
+			array_filter( array( 'maxResults' => '', 'playlistId' => $youtube_playlist_code ) )
 		);
 
 		return ( $response );
