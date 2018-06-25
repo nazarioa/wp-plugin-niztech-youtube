@@ -196,6 +196,16 @@ class Niztech_Youtube {
 	}
 
 	/**
+	 * @param $youtube_video_code
+	 *
+	 * @return mixed
+	 */
+	public static function query_video_data_from_youtube( $youtube_video_code ) {
+		return Niztech_Youtube::$google_service->videos->listVideos( 'snippet,localizations',
+			array( 'id' => $youtube_video_code ) )[0];
+	}
+
+	/**
 	 * ref: https://codex.wordpress.org/Creating_Tables_with_Plugins
 	 *
 	 * @param $playlist_id
@@ -231,6 +241,36 @@ class Niztech_Youtube {
 			array( 'last_refresh' => $today->format( 'Y-m-d H:i:s' ) ), //2018-06-14 23:08:15
 			array( 'id' => $playlist_id )
 		);
+	}
+
+	/**
+	 * @param $post_id
+	 * @param $data
+	 * @param $video_code
+	 */
+	public static function commit_video_data_to_wp( $post_id, $data, $video_code ) {
+		global $wpdb;
+
+		// Remove existing data
+		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS,
+			array( 'post_id' => $post_id, 'playlist_id' => 0 ) );
+
+		$today = new DateTime();
+
+		$generic_video_data = array(
+			'post_id'            => $post_id,
+			'playlist_id'        => 0,
+			'youtube_video_code' => $video_code,
+			'title'              => $data->snippet->title,
+			'last_update'        => $today->format( 'Y-m-d H:i:s' ),
+		);
+
+		$thumbnails = self::process_Google_Service_YouTube_ThumbnailDetails( $data->snippet->thumbnails );
+
+		$to_commit = array_merge( $generic_video_data, $thumbnails );
+
+		// TODO: Not clobber video titles if they have been set to display differently.
+		$wpdb->insert( $wpdb->prefix . self::TBL_VIDEOS, $to_commit );
 	}
 
 
@@ -274,6 +314,28 @@ class Niztech_Youtube {
 
 		// returns an array of objects
 		return $playlist_data;
+	}
+
+	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ) {
+		if ( empty( $youtube_video_code ) ) {
+			return null;
+		}
+
+		if ( $bypass_cached_data ) {
+			$raw_data = self::query_video_data_from_youtube( $youtube_video_code );
+			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
+			if ( ! empty( $raw_data ) ) {
+				Niztech_Youtube::commit_video_data_to_wp( $post_id, $raw_data, $youtube_video_code );
+			}
+		}
+
+		// query local database for info
+		global $wpdb;
+		$query = 'SELECT * ' .
+		         'FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
+		         " WHERE youtube_video_code = post_id = \"$post_id\"";
+
+		return $wpdb->get_row( $query );
 	}
 
 	public static function process_Google_Service_YouTube_ThumbnailDetails( $thumbnail_details ) {
