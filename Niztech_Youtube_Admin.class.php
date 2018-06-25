@@ -76,20 +76,6 @@ class Niztech_Youtube_Admin {
 		add_action( 'add_meta_boxes', array( 'Niztech_Youtube_Admin', 'metabox_video_source_playlist' ) );
 	}
 
-	public static function video_source_get_meta( $value, $post_id = null ) {
-		if ( empty( $post_id ) ) {
-			global $post;
-			$post_id = $post->ID;
-		}
-
-		$field = get_post_meta( $post_id, $value, true );
-		if ( ! empty( $field ) ) {
-			return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
-		} else {
-			return false;
-		}
-	}
-
 	public static function metabox_video_source_playlist() {
 		add_meta_box(
 			'metabox-source-playlist-code',
@@ -151,7 +137,7 @@ class Niztech_Youtube_Admin {
 
 	public static function metabox_video_source_playlist_html( $post ) {
 		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
-		$type         = Niztech_Youtube_Admin::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
+		$type         = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
 		$youtube_data = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post->ID );
 		?>
 
