@@ -364,23 +364,24 @@ class Niztech_Youtube {
 		$wpdb->delete( $table_name, array( 'post_id' => $post_id ) );
 	}
 
-	public static function get_video_or_playlist_code( $type, $post_id ) {
+	public static function get_video_or_playlist_code_and_foreign_key( $type, $post_id ) {
 		global $wpdb;
+		$query = '';
 
 		if ( empty( $type ) || empty( $post_id ) ) {
 			return '';
-		} elseif ( $type == self::TYPE_OPTION_PLAYLIST ) {
-			$video_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
+		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+			$video_tbl_name = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
+			$query          = "SELECT id, post_id, youtube_playlist_code as youtube_code FROM $video_tbl_name WHERE post_id = $post_id";
 
-			return $wpdb->get_row( 'SELECT youtube_playlist_code FROM ' . $video_tbl_name . ' WHERE post_id  = ' . $post_id,
-				'OBJECT' )->youtube_video_code;
-
-		} elseif ( $type == self::TYPE_OPTION_VIDEO ) {
-			$video_tbl_name = $wpdb->prefix . self::TBL_VIDEOS;
-
-			return $wpdb->get_row( 'SELECT youtube_video_code FROM ' . $video_tbl_name . ' WHERE post_id  = ' . $post_id,
-				'OBJECT' )->youtube_video_code;
+		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
+			$video_tbl_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+			$query          = "SELECT id, post_id, youtube_video_code as youtube_code FROM $video_tbl_name WHERE post_id = $post_id";
 		}
+
+		return $wpdb->get_row( $query, 'OBJECT' );
+	}
+
 	}
 
 }
