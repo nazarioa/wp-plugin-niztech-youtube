@@ -382,6 +382,15 @@ class Niztech_Youtube {
 		return $wpdb->get_row( $query, 'OBJECT' );
 	}
 
+	/**
+	 * Method to extract and cleanup the youtube code from a string.s
+	 *
+	 * @param string $youtube_url_string
+	 *
+	 * @return string
+	 */
+	public static function sanitize_url_extract_code( $youtube_url_string = '' ) {
+		return $youtube_url_string;
 	}
 
 }
