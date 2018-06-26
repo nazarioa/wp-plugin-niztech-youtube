@@ -161,7 +161,7 @@ class Niztech_Youtube_Admin {
 			$videos = Niztech_Youtube_Client::video_content( $post->ID );
 			foreach ( $videos as $video ) {
 				?>
-                <a href="//www.youtube.com/watch?v=<?php echo $video->youtube_video_code ?>" class="niztech-youtube-thumbnail-picture" style="background-image: url(<?php echo $video->thumbnail_high_url ?>);">
+                <a href="//www.youtube.com/watch?v=<?php echo $video->youtube_video_code ?>" class="niztech-youtube-thumbnail-picture" style="background-image: url(<?php echo $video->thumbnail_high_url ?>);" title="<?php echo $video->title ?>">
                 </a>
 				<?php
 			}
