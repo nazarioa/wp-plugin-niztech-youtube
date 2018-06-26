@@ -156,18 +156,17 @@ class Niztech_Youtube_Admin {
             </select>
         </p>
         <p>
+        <div class="niztech-youtube-thumbnails">
 			<?php
-			if ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) { ?>
-                Playlist
+			$videos = Niztech_Youtube_Client::video_content( $post->ID );
+			foreach ( $videos as $video ) {
+				?>
+                <a href="//www.youtube.com/watch?v=<?php echo $video->youtube_video_code ?>" class="niztech-youtube-thumbnail-picture" style="background-image: url(<?php echo $video->thumbnail_high_url ?>);">
+                </a>
 				<?php
-//				Niztech_Youtube::get_playlist_info_for( $youtube_data->youtube_code, $post->ID ));
-
-			} elseif ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) { ?>
-                Video
-				<?php
-//				echo Niztech_Youtube::get_video_info_for( $youtube_data->youtube_code, $post->ID )->id;
 			}
 			?>
+        </div>
         </p>
 
 	<?php }

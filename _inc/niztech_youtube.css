@@ -44,3 +44,35 @@
 .niztech-youtube-label {
   font-size: 1rem;
 }
+
+.niztech-youtube-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #d3d3d3;
+}
+
+.niztech-youtube-thumbnails .niztech-youtube-thumbnail-picture {
+  margin: 1em;
+  display: block;
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  /*width: 200px;*/
+  max-width: 300px;
+  /*min-width: 150px;*/
+  height: 200px;
+  min-height: 150px;
+  max-height: 300px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: 1px solid transparent;
+}
+
+.niztech-youtube-thumbnails .niztech-youtube-thumbnail-picture:hover {
+  border: 1px solid #308297;
+}

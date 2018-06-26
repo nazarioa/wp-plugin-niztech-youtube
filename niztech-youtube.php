@@ -29,6 +29,8 @@ register_deactivation_hook( __FILE__, array( 'Niztech_Youtube', 'plugin_deactiva
 
 // Add class files who have hooks that are referenced in this file.
 require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube.class.php' );
+require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Client.class.php' );
+require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Admin.class.php' );
 
 add_action( 'init', array( 'Niztech_Youtube', 'init' ) );
 
