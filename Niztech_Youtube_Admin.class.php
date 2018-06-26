@@ -66,7 +66,6 @@ class Niztech_Youtube_Admin {
 
 	public static function config_page_render() {
 		include( NT_YOUTUBE__PLUGIN_DIR . '/views/config.php' );
-//		$temp = Niztech_Youtube::get_playlist_info_for( 'PLhTSRIqkFBz5go_OZP63nw-NXEnSKELHk', true );
 	}
 
 	public static function metabox_video_source_setup() {
