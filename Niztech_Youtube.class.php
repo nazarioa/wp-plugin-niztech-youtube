@@ -104,7 +104,7 @@ class Niztech_Youtube {
 
 	public static function create_table_playlist() {
 		global $wpdb;
-		$table_name      = $wpdb->prefix . TBL_PLAYLIST;
+		$table_name      = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -137,7 +137,7 @@ class Niztech_Youtube {
 
 	public static function create_table_video() {
 		global $wpdb;
-		$table_name      = $wpdb->prefix . TBL_VIDEOS;
+		$table_name      = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
