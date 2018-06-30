@@ -9,6 +9,10 @@
 
 class Niztech_Youtube_Client {
 
+	public static function init() {
+		add_shortcode( 'ntyt_videos', array( 'Niztech_Youtube_Client', 'video_content_shortcode' ) );
+	}
+
 	public static function video_content( $post_id ) {
 		global $wpdb;
 		if ( empty( $post_id ) ) {
@@ -33,4 +37,31 @@ class Niztech_Youtube_Client {
 		}
 
 	}
+
+	/**
+	 * @param string $class
+	 * @param string $id
+	 * @param string $post_id
+	 */
+	public static function video_content_html( $class = '', $id = '', $post_id = '' ) {
+		echo '<div>Example</div>';
+	}
+
+	/**
+	 * Short code implementation for video content
+	 *
+	 * @param $attr
+	 *
+	 * @return string
+	 */
+	public static function video_content_shortcode( $attr ) {
+		$a = shortcode_atts( array(
+			'class'  => '',
+			'id'     => '',
+			'number' => 5,
+		), $attr );
+
+		return Niztech_Youtube_Client::video_content_html( $a['class'], $a['id'], $a['number'] );
+	}
+
 }

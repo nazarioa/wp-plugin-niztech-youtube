@@ -38,3 +38,9 @@ if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 	require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Admin.class.php' );
 	add_action( 'init', array( 'Niztech_Youtube_Admin', 'init' ) );
 }
+
+
+if (true) {
+	require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Client.class.php' );
+	add_action( 'init', array( 'Niztech_Youtube_Client', 'init' ) );
+}
