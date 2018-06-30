@@ -89,7 +89,7 @@ class Niztech_Youtube_Admin {
 		$youtube_nonce       = esc_attr( $_POST['niztech_video_source_nonce'] ?? '' );
 		$youtube_foreign_key = esc_attr( $_POST['niztech_video_foreign_key'] ?? '' );
 
-		// Dont want to save any data if the user does not intend it.
+		// Don't want to save any data if the user does not intend it.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
