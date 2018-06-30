@@ -141,9 +141,9 @@ class Niztech_Youtube {
 		$charset_collate = $wpdb->get_charset_collate();
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			playlist_id mediumint(9) DEFAULT '' NOT NULL,
+			playlist_id mediumint(9) DEFAULT '0' NOT NULL,
 			post_id bigint(20),
-			youtube_video_code varchar(255) DEFAULT '' NOT NULL,
+			youtube_video_code varchar(255) NOT NULL,
 			title tinytext NOT NULL,
 			last_update datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			thumbnail_default_url varchar(255),
