@@ -43,8 +43,21 @@ class Niztech_Youtube_Client {
 	 * @param string $id
 	 * @param string $post_id
 	 */
-	public static function video_content_html( $class = '', $id = '', $post_id = '' ) {
-		echo '<div>Example</div>';
+	public static function video_content_html( $post_id, $class = '', $id = '' ) {
+		$videos = Niztech_Youtube_Client::video_content( $post_id );
+		$output = '';
+		if ( ! empty( $videos ) ) {
+			$videos_html     = '';
+			foreach ( $videos as $video ) {
+				$videos_html .= sprintf( '<a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')" title="%s"></a>',
+					$video->youtube_video_code , $video->thumbnail_high_url,  $video->title);
+			}
+			$id_attrib = (empty($id) ? '' : sprintf('id="%s"'));
+			$class_attrib =  empty($class) ? 'class="niztech-youtube-thumbnails' : sprintf('class="niztech-youtube-thumbnails %s"', $class);
+			$output = sprintf( '<div %s">%s</div>', implode(' ', array($id_attrib,$class_attrib )), $videos_html );
+		}
+
+		echo $output;
 	}
 
 	/**
