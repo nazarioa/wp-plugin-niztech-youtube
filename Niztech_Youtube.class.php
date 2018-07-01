@@ -161,6 +161,7 @@ class Niztech_Youtube {
 			thumbnail_maxres_url varchar(255),
 			thumbnail_maxres_width int(4),
 			thumbnail_maxres_height int(4),
+			description mediumtext,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
@@ -250,12 +251,14 @@ class Niztech_Youtube {
 
 		$today = new DateTime();
 
+		// TODO: scrub data coming from youtube for potential vulnerabilities before comitting to database
 		$generic_video_data = array(
 			'post_id'            => $post_id,
 			'playlist_id'        => 0,
 			'youtube_video_code' => $video_code,
-			'title'              => $data->snippet->title,
+			'title'              => $data->snippet->title ?? '',
 			'last_update'        => $today->format( 'Y-m-d H:i:s' ),
+			'description'        => $data->snippet->description ?? '',
 		);
 
 		$thumbnails = self::process_Google_Service_YouTube_ThumbnailDetails( $data->snippet->thumbnails );
