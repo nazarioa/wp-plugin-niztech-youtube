@@ -20,7 +20,7 @@ class Niztech_Youtube_Client {
 			$post_id = $post->ID;
 		}
 
-		$type               = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
+		$type               = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post_id );
 		$foreign_key_object = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post_id );
 
 		if ( empty( $foreign_key_object ) || empty( $type ) ) {
@@ -52,7 +52,7 @@ class Niztech_Youtube_Client {
 				$videos_html .= sprintf( '<a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')" title="%s"></a>',
 					$video->youtube_video_code , $video->thumbnail_high_url,  $video->title);
 			}
-			$id_attrib = (empty($id) ? '' : sprintf('id="%s"'));
+			$id_attrib = (empty($id) ? '' : sprintf('id="%s"', $id));
 			$class_attrib =  empty($class) ? 'class="niztech-youtube-thumbnails' : sprintf('class="niztech-youtube-thumbnails %s"', $class);
 			$output = sprintf( '<div %s">%s</div>', implode(' ', array($id_attrib,$class_attrib )), $videos_html );
 		}
@@ -71,10 +71,10 @@ class Niztech_Youtube_Client {
 		$a = shortcode_atts( array(
 			'class'  => '',
 			'id'     => '',
-			'number' => 5,
+			'post' => '',
 		), $attr );
 
-		return Niztech_Youtube_Client::video_content_html( $a['class'], $a['id'], $a['number'] );
+		Niztech_Youtube_Client::video_content_html( $a['post'], $a['class'], $a['id'] );
 	}
 
 }
