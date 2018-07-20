@@ -291,7 +291,7 @@ class Niztech_Youtube {
 		if ( ! empty( $foreign_data ) ) {
 			$foreign_id = $foreign_data->id;
 		} else {
-			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code )->id;
+			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code );
 		}
 
 		$existing_playlist = Niztech_Youtube::get_local_playlist_row( $foreign_id );
