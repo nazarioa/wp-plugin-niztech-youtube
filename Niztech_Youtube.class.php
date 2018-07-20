@@ -282,13 +282,16 @@ class Niztech_Youtube {
 	 */
 	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ) {
 		global $wpdb;
+		$foreign_id = null;
 
 		// Query cached data
-		$foreign_id = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( Niztech_Youtube::TYPE_OPTION_PLAYLIST,
-			$post_id )->id;
+		$foreign_data = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( Niztech_Youtube::TYPE_OPTION_PLAYLIST,
+			$post_id );
 
-		if ( empty( $foreign_id ) ) {
-			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code );
+		if ( ! empty( $foreign_data ) ) {
+			$foreign_id = $foreign_data->id;
+		} else {
+			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code )->id;
 		}
 
 		$existing_playlist = Niztech_Youtube::get_local_playlist_row( $foreign_id );
