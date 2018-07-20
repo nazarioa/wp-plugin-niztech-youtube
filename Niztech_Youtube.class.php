@@ -403,10 +403,12 @@ class Niztech_Youtube {
 	public static function remove_playlists_for_post( $post_id ) {
 		global $wpdb;
 		$playlist_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
-		$query             = 'SELECT id FROM ' . $playlist_tbl_name . ' WHERE post_id = ' . $post_id;
-		$playlist_id       = $wpdb->get_row( $query, 'OBJECT' )->id;
-		$wpdb->delete( $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS, array( 'playlist_id' => $playlist_id ) );
-		$wpdb->delete( $playlist_tbl_name, array( 'post_id' => $post_id ) );
+		$query             = "SELECT id FROM $playlist_tbl_name WHERE post_id = $post_id";
+		$query_data        = $wpdb->get_row( $query, 'OBJECT' );
+		if ( ! empty( $query_data ) ) {
+			$wpdb->delete( $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS, array( 'playlist_id' => $query_data->id ) );
+			$wpdb->delete( $playlist_tbl_name, array( 'post_id' => $post_id ) );
+		}
 	}
 
 	public static function remove_videos_for_post( $post_id ) {
