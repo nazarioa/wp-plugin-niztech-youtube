@@ -357,7 +357,7 @@ class Niztech_Youtube {
 		global $wpdb;
 		$query = 'SELECT * ' .
 		         'FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
-		         " WHERE youtube_video_code = post_id = \"$post_id\"";
+		         " WHERE youtube_video_code = \"$youtube_video_code\" and post_id = \"$post_id\"";
 
 		return $wpdb->get_row( $query );
 	}
