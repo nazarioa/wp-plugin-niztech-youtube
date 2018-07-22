@@ -280,19 +280,19 @@ class Niztech_Youtube {
 	 */
 	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ) {
 		global $wpdb;
-		$foreign_id = null;
+		$foreign_playlist_id = null;
 
 		// Query cached data
 		$foreign_data = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( Niztech_Youtube::TYPE_OPTION_PLAYLIST,
 			$post_id );
 
 		if ( ! empty( $foreign_data ) ) {
-			$foreign_id = $foreign_data->id;
+			$foreign_playlist_id = $foreign_data->id;
 		} else {
-			$foreign_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code );
+			$foreign_playlist_id = Niztech_Youtube::create_empty_local_playlist_row( $post_id, $youtube_playlist_code );
 		}
 
-		$existing_playlist = Niztech_Youtube::get_local_playlist_row( $foreign_id );
+		$existing_playlist = Niztech_Youtube::get_local_playlist_row( $foreign_playlist_id );
 
 		if ( ! empty( $existing_playlist->last_refresh ) ) {
 			// if days since $last_refresh > $video_stale_limit_days, set $bypass_cached_data = true
@@ -307,7 +307,7 @@ class Niztech_Youtube {
 			$raw_data = Niztech_Youtube::query_playlist_data_from_youtube( $youtube_playlist_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data->items ) ) {
-				Niztech_Youtube::commit_playlist_data_to_wp( $foreign_id, $post_id, $raw_data->items );
+				Niztech_Youtube::commit_playlist_data_to_wp( $foreign_playlist_id, $post_id, $raw_data->items );
 			}
 		}
 
@@ -324,15 +324,15 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * @param $foreign_id
+	 * @param $playlist_id
 	 *
 	 * @return mixed
 	 */
-	public static function get_local_playlist_row( $foreign_id ) {
+	public static function get_local_playlist_row( $playlist_id ) {
 		global $wpdb;
 		$query = 'SELECT * ' .
 		         'FROM ' . $wpdb->prefix . self::TBL_PLAYLIST . ' ' .
-		         "WHERE id = \"$foreign_id\"";
+		         "WHERE id = \"$playlist_id\"";
 
 		return $wpdb->get_row( $query, 'OBJECT' );
 	}
