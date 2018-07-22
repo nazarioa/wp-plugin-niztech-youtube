@@ -366,9 +366,11 @@ class Niztech_Youtube {
 		$results         = array();
 		$thumbnail_types = array( 'default', 'medium', 'high', 'standard', 'maxres' );
 		foreach ( $thumbnail_types as $type ) {
-			$results[ 'thumbnail_' . $type . '_url' ]    = $thumbnail_details->$type->url;
-			$results[ 'thumbnail_' . $type . '_width' ]  = $thumbnail_details->$type->width;
-			$results[ 'thumbnail_' . $type . '_height' ] = $thumbnail_details->$type->height;
+			if ( ! empty( $thumbnail_details->$type ) ) {
+				$results[ 'thumbnail_' . $type . '_url' ]    = $thumbnail_details->$type->url;
+				$results[ 'thumbnail_' . $type . '_width' ]  = $thumbnail_details->$type->width;
+				$results[ 'thumbnail_' . $type . '_height' ] = $thumbnail_details->$type->height;
+			}
 		}
 
 		return $results;
