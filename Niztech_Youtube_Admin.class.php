@@ -83,24 +83,30 @@ class Niztech_Youtube_Admin {
 		);
 	}
 
+	/**
+	 * This function gets called from the admin page, specifically a metabox screen.
+	 *
+	 * @param $post_id
+	 */
 	public static function video_source_save( $post_id ) {
+		// TODO: Make the sanitize_url_extract_code return an object with keys on for each type.
 		$youtube_code        = esc_attr( Niztech_Youtube::sanitize_url_extract_code( $_POST['niztech_video_youtube_url'] ?? '' ) );
 		$youtube_type        = esc_attr( $_POST['niztech_video_youtube_type'] ?? '' );
 		$youtube_nonce       = esc_attr( $_POST['niztech_video_source_nonce'] ?? '' );
 		$youtube_foreign_key = esc_attr( $_POST['niztech_video_foreign_key'] ?? '' );
 
-		// Don't want to save any data if the user does not intend it.
+		// Only save changes if the user clicked save.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
 
-		// Validate that the input is good.
+		// Validate that the request came from the user via admin screen.
 		if ( ! isset( $_POST['niztech_video_source_nonce'] ) || ! wp_verify_nonce( $youtube_nonce,
 				Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA ) ) {
 			return;
 		}
 
-		// Validate that the user has permissions
+		// Validate that the user has permission to make changes.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
@@ -110,6 +116,7 @@ class Niztech_Youtube_Admin {
 			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 
+			// TODO: Supply a message stating that all data was removed.
 			return;
 		}
 
@@ -118,7 +125,7 @@ class Niztech_Youtube_Admin {
 			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 
-			// Update the type settings.
+			// Update metadata type value for the data being saved.
 			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 		}
 
