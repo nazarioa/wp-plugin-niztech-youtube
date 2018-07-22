@@ -213,20 +213,8 @@ class Niztech_Youtube {
 
 		// Take $data and stores it into database
 		foreach ( $data as $datum ) {
-			$generic_video_data = array(
-				'playlist_id'        => $playlist_id,
-				'post_id'            => $post_id,
-				'title'              => $datum->snippet->title,
-				'youtube_video_code' => $datum->snippet->resourceId->videoId,
-			);
-
-			$thumbnails  = self::process_Google_Service_YouTube_ThumbnailDetails( $datum->snippet->thumbnails );
-			$to_commit[] = array_merge( $generic_video_data, $thumbnails );
-		}
-
-		// TODO: Not clobber video titles if they have been set to display differently.
-		foreach ( $to_commit as $row ) {
-			$wpdb->insert( $wpdb->prefix . self::TBL_VIDEOS, $row );
+			Niztech_Youtube::commit_video_data_to_wp( $post_id, $datum, $datum->snippet->resourceId->videoId,
+				$playlist_id );
 		}
 
 		$today = new DateTime();
@@ -241,19 +229,17 @@ class Niztech_Youtube {
 	 * @param $post_id
 	 * @param $data
 	 * @param $video_code
+	 * @param int $playlist_id
 	 */
-	public static function commit_video_data_to_wp( $post_id, $data, $video_code ) {
+	public static function commit_video_data_to_wp( $post_id, $data, $video_code, $playlist_id = 0 ) {
 		global $wpdb;
-
-		// Remove existing data
-		Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, 0 );
 
 		$today = new DateTime();
 
 		// TODO: scrub data coming from youtube for potential vulnerabilities before comitting to database
 		$generic_video_data = array(
 			'post_id'            => $post_id,
-			'playlist_id'        => 0,
+			'playlist_id'        => $playlist_id,
 			'youtube_video_code' => $video_code,
 			'title'              => $data->snippet->title ?? '',
 			'last_update'        => $today->format( 'Y-m-d H:i:s' ),
@@ -361,6 +347,8 @@ class Niztech_Youtube {
 			$raw_data = self::query_video_data_from_youtube( $youtube_video_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data ) ) {
+				// Remove existing data
+				Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, 0 );
 				Niztech_Youtube::commit_video_data_to_wp( $post_id, $raw_data, $youtube_video_code );
 			}
 		}
