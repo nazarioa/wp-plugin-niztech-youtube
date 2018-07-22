@@ -209,7 +209,7 @@ class Niztech_Youtube {
 		}
 
 		// Remove existing data
-		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'post_id' => $post_id ) );
+		Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 
 		// Take $data and stores it into database
 		foreach ( $data as $datum ) {
@@ -246,8 +246,7 @@ class Niztech_Youtube {
 		global $wpdb;
 
 		// Remove existing data
-		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS,
-			array( 'post_id' => $post_id, 'playlist_id' => 0 ) );
+		Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, 0 );
 
 		$today = new DateTime();
 
@@ -268,7 +267,6 @@ class Niztech_Youtube {
 		// TODO: Not clobber video titles if they have been set to display differently.
 		$wpdb->insert( $wpdb->prefix . self::TBL_VIDEOS, $to_commit );
 	}
-
 
 	/**
 	 * Queries the local database for playlist data. If the data is older than a few days
@@ -400,23 +398,6 @@ class Niztech_Youtube {
 		self::$google_service = new Google_Service_YouTube( $client );
 	}
 
-	public static function remove_playlists_for_post( $post_id ) {
-		global $wpdb;
-		$playlist_tbl_name = $wpdb->prefix . self::TBL_PLAYLIST;
-		$query             = "SELECT id FROM $playlist_tbl_name WHERE post_id = $post_id";
-		$query_data        = $wpdb->get_row( $query, 'OBJECT' );
-		if ( ! empty( $query_data ) ) {
-			$wpdb->delete( $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS, array( 'playlist_id' => $query_data->id ) );
-			$wpdb->delete( $playlist_tbl_name, array( 'post_id' => $post_id ) );
-		}
-	}
-
-	public static function remove_videos_for_post( $post_id ) {
-		global $wpdb;
-		$table_name = $wpdb->prefix . self::TBL_VIDEOS;
-		$wpdb->delete( $table_name, array( 'post_id' => $post_id ) );
-	}
-
 	public static function get_video_or_playlist_code_and_foreign_key( $type, $post_id ) {
 		global $wpdb;
 		$query = '';
@@ -464,6 +445,39 @@ class Niztech_Youtube {
 		} else {
 			return false;
 		}
+	}
+
+	public static function v2_delete_video_by_id( $id ) {
+		global $wpdb;
+		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'id' => $id ) );
+	}
+
+	public static function v2_delete_video_by_post_playlist( $post_id, $playlist_id ) {
+		global $wpdb;
+		if ( ! empty( $post_id ) && ! empty( $playlist_id ) ) {
+			$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array(
+				'post_id'     => $post_id,
+				'playlist_id' => $playlist_id
+			) );
+		} elseif ( ! empty( $post_id ) ) {
+			$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array(
+				'post_id' => $post_id,
+			) );
+		} elseif ( ! empty( $playlist_id ) ) {
+			$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array(
+				'playlist_id' => $playlist_id,
+			) );
+		}
+	}
+
+	public static function v2_delete_playlist_by_id( $id ) {
+		global $wpdb;
+		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
+	}
+
+	public static function v2_delete_playlist_by_post_id( $post_id ) {
+		global $wpdb;
+		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
 	}
 
 }
