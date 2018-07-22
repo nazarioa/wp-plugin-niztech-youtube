@@ -111,30 +111,35 @@ class Niztech_Youtube_Admin {
 			return;
 		}
 
-		// Clear out all data for this post because the user hasn't supplied a URL.
 		if ( empty( $youtube_code ) ) {
+			// Delete post data because $youtube_code is empty.
 			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 
 			// TODO: Supply a message stating that all data was removed.
 			return;
-		}
 
-		{
-			// Remove old data.
+		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
 			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
-
-			// Update metadata type value for the data being saved.
-			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
-		}
-
-		if ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
-			// TODO: $youtube_url Should be sanitised or check to make sure it is a valid video URL.
 			Niztech_Youtube::get_video_info_for( $youtube_code, $post_id, true );
+			// Instead of above do:
+			// get video data from youtube (see get_video_info_for)
+			// if not null save to wp
+			// update post metadata
+			// if null report error
+			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
+			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 			Niztech_Youtube::get_playlist_info_for( $youtube_code, $post_id, true );
+			// Instead of above do:
+			// get playlist data from youtube (see get_playlist_info_for)
+			// if not null save to wp,
+			// update post metadata
+			// if null report error
+			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 		}
 	}
 
