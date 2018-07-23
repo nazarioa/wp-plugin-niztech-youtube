@@ -20,7 +20,7 @@ if ( ! function_exists( 'add_action' ) ) {
 }
 
 define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.0.0' );
-define( 'NT_YOUTUBE_DATABASE_VERSION', 1 );
+define( 'NT_YOUTUBE_DATABASE_VERSION', 2 );
 define( 'NT_YOUTUBE__MINIMUM_WP_VERSION', '4.0' );
 define( 'NT_YOUTUBE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
