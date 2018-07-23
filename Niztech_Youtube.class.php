@@ -215,7 +215,7 @@ class Niztech_Youtube {
 
 		$today = new DateTime();
 
-		// TODO: scrub data coming from youtube for potential vulnerabilities before comitting to database
+		// TODO: scrub data coming from youtube for potential vulnerabilities before committing to database
 		$generic_video_data = array(
 			'post_id'            => $post_id,
 			'playlist_id'        => $playlist_id,
