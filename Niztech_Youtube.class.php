@@ -185,14 +185,10 @@ class Niztech_Youtube {
 	 */
 	public static function commit_playlist_data_to_wp( $playlist_id, $post_id, array $data ) {
 		global $wpdb;
-		$to_commit = array();
 
 		if ( empty( $playlist_id ) || empty( $post_id ) ) {
 			return;
 		}
-
-		// Remove existing data
-		Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
 
 		// Take $data and stores it into database
 		foreach ( $data as $datum ) {
@@ -276,6 +272,7 @@ class Niztech_Youtube {
 			$raw_data = Niztech_Youtube::query_playlist_data_from_youtube( $youtube_playlist_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data->items ) ) {
+				Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, $foreign_playlist_id );
 				Niztech_Youtube::commit_playlist_data_to_wp( $foreign_playlist_id, $post_id, $raw_data->items );
 			}
 		}
