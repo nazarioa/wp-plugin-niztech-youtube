@@ -160,7 +160,7 @@ class Niztech_Youtube {
 	public static function query_playlist_data_from_youtube( $youtube_playlist_code ) {
 		$response = self::$google_service->playlistItems->listPlaylistItems(
 			'snippet,contentDetails',
-			array_filter( array( 'maxResults' => '', 'playlistId' => $youtube_playlist_code ) )
+			array_filter( array( 'maxResults' => 50, 'playlistId' => $youtube_playlist_code ) )
 		);
 
 		return ( $response );
