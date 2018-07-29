@@ -109,7 +109,7 @@ class Niztech_Youtube {
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			post_id bigint(20) NOT NULL,
-			youtube_playlist_code varchar(255) NOT NULL,
+			youtube_playlist_code DEFAULT '0' varchar(255) NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
@@ -386,15 +386,34 @@ class Niztech_Youtube {
 		return $wpdb->get_row( $query, 'OBJECT' );
 	}
 
-	/**
-	 * Method to extract and cleanup the youtube code from a string.s
-	 *
-	 * @param string $youtube_url_string
-	 *
-	 * @return string
-	 */
-	public static function sanitize_url_extract_code( $youtube_url_string = '' ) {
-		return $youtube_url_string;
+	public static function is_youtube_url( $youtube_url_string ) {
+		$youtube_url_string = trim( $youtube_url_string );
+		$isYoutubeLink      = preg_match( '/^(http|https):\/\/www\.youtube\.com/', $youtube_url_string );
+		if ( $isYoutubeLink === 1 ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static function extract_youtube_code(
+		$youtube_url_string = '',
+		$type = Niztech_Youtube::TYPE_OPTION_VIDEO
+	) {
+		$matches = array();
+		$pattern = '';
+		if ( $type === Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+			$pattern = '/list=([\w-]+)/i';
+		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO ) {
+			$pattern = '/v=(\w+?)&|v=(\w+?)$/U';
+		}
+
+		preg_match( $pattern, $youtube_url_string, $matches );
+		if ( sizeof( $matches ) > 0 ) {
+			return $matches[1];
+		}
+
+		throw new \Exception( 'Input does not appear to have a valid ' . $type . ' code' );
 	}
 
 	/**
