@@ -176,7 +176,7 @@ class Niztech_Youtube_Admin {
 
         <p>
             <label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
-            <input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url"
+            <input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url" style="width: 80%;"
                    value="<?php echo $youtube_url ?? ''; ?>">
             <input type="hidden" name="niztech_video_foreign_key" id="niztech_video_foreign_key"
                    value="<?php echo $youtube_data->id ?? ''; ?>">
