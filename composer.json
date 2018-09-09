@@ -9,5 +9,8 @@
     ],
     "require": {
         "google/apiclient": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
     }
 }
