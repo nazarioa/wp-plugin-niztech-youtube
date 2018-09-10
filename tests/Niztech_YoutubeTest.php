@@ -12,8 +12,8 @@
  * @package Niztech_Youtube
  */
 class Niztech_YoutubeTest extends WP_UnitTestCase {
-	private $validUrlHttps = 'https://www.youtube.com/v/ABC123';
-	private $validUrlHttp = 'http://www.youtube.com/v/ABC123';
+	private $validUrlHttps = 'https://www.youtube.com/watch?v=VIDEO_A1&list=PLAYLIST_A';
+	private $validUrlHttp = 'http://www.youtube.com/watch?v=VIDEO_B1&list=PLAYLIST_B';
 	private $notValidUrl = 'http://www.notYuetube.com/v/ABC123';
 
 	public function setUp() {
@@ -74,8 +74,52 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 
 	}
 
-	public function testExtract_youtube_code() {
+	/**
+	 * @group extract_youtube_code
+	 */
+	public function testExtract_youtube_code_withValidHttpsUrlForVideo() {
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps, Niztech_Youtube::TYPE_OPTION_VIDEO );
+		$this->assertEquals($result, 'VIDEO_A1');
+	}
 
+	/**
+	 * @group extract_youtube_code
+	 */
+	public function testExtract_youtube_code_withValidHttpUrlForVideo() {
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp, Niztech_Youtube::TYPE_OPTION_VIDEO);
+		$this->assertEquals($result, 'VIDEO_B1');
+	}
+
+	/**
+	 * @group extract_youtube_code
+	 * @expectedException \Exception
+	 */
+	public function testExtract_youtube_code_withNoneValidUrlForVideo() {
+		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_VIDEO);
+	}
+
+	/**
+	 * @group extract_youtube_code
+	 */
+	public function testExtract_youtube_code_withValidHttpsUrlForPlaylist() {
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps ,Niztech_Youtube::TYPE_OPTION_PLAYLIST);
+		$this->assertEquals($result, 'PLAYLIST_A');
+	}
+
+	/**
+	 * @group extract_youtube_code
+	 */
+	public function testExtract_youtube_code_withValidHttpUrlForPlaylist() {
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp, Niztech_Youtube::TYPE_OPTION_PLAYLIST);
+		$this->assertEquals($result, 'PLAYLIST_B');
+	}
+
+	/**
+	 * @group extract_youtube_code
+	 * @expectedException \Exception
+	 */
+	public function testExtract_youtube_code_withNoneValidUrlForPlaylist() {
+		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_PLAYLIST);
 	}
 
 	public function testVideo_source_get_meta() {
