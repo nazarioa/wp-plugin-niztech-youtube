@@ -12,6 +12,10 @@
  * @package Niztech_Youtube
  */
 class Niztech_YoutubeTest extends WP_UnitTestCase {
+	private $validUrlHttps = 'https://www.youtube.com/v/ABC123';
+	private $validUrlHttp = 'http://www.youtube.com/v/ABC123';
+	private $notValidUrl = 'http://www.notYuetube.com/v/ABC123';
+
 	public function setUp() {
 		parent::setUp();
 
@@ -26,8 +30,28 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 
 	}
 
-	public function testIs_youtube_url() {
+	/**
+	 * @group is_youtube_url
+	 */
+	public function testIs_youtube_url_acceptsValidUrlWithHttps() {
+		$result = $this->class_instance->is_youtube_url( $this->validUrlHttps );
+		$this->assertTrue( $result );
+	}
 
+	/**
+	 * @group is_youtube_url
+	 */
+	public function testIs_youtube_url_acceptsValidUrlWithHttp() {
+		$result = $this->class_instance->is_youtube_url( $this->validUrlHttp );
+		$this->assertTrue( $result );
+	}
+
+	/**
+	 * @group is_youtube_url
+	 */
+	public function testIs_youtube_url_acceptsNoneValidUrl() {
+		$result = $this->class_instance->is_youtube_url( $this->notValidUrl );
+		$this->assertFalse( $result );
 	}
 
 	public function testGet_local_playlist_row() {
