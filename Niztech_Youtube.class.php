@@ -27,6 +27,10 @@ class Niztech_Youtube {
 			self::init_hooks();
 		}
 
+		if ( ! session_id() ) {
+			session_start();
+		}
+
 		if ( isset( $_POST['action'] ) && $_POST['action'] == 'enter-key' ) {
 			self::enter_api_key();
 		}

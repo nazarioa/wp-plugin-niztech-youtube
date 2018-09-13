@@ -12,7 +12,6 @@ if ( ! file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
 	throw new \Exception( 'please run "composer install in "' . __DIR__ . '"' );
 }
 require_once __DIR__ . '/vendor/autoload.php';
-session_start();
 
 if ( ! function_exists( 'add_action' ) ) {
 	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
@@ -32,7 +31,7 @@ require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube.class.php' );
 require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Client.class.php' );
 require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Admin.class.php' );
 
-add_action( 'init', array( 'Niztech_Youtube', 'init' ) );
+add_action( 'init', array( 'Niztech_Youtube', 'init' ), 1 );
 
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 	require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Admin.class.php' );
@@ -40,7 +39,7 @@ if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 }
 
 
-if (true) {
+if ( true ) {
 	require_once( NT_YOUTUBE__PLUGIN_DIR . 'Niztech_Youtube_Client.class.php' );
 	add_action( 'init', array( 'Niztech_Youtube_Client', 'init' ) );
 }
