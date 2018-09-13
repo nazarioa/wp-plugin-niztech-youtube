@@ -113,7 +113,7 @@ class Niztech_Youtube {
 		$sql             = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			post_id bigint(20) NOT NULL,
-			youtube_playlist_code DEFAULT '0' varchar(255) NOT NULL,
+			youtube_playlist_code varchar(255) NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			PRIMARY KEY  (id)
 		) $charset_collate;";
