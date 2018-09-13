@@ -78,16 +78,18 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpsUrlForVideo() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps, Niztech_Youtube::TYPE_OPTION_VIDEO );
-		$this->assertEquals($result, 'VIDEO_A1');
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps,
+			Niztech_Youtube::TYPE_OPTION_VIDEO );
+		$this->assertEquals( $result, 'VIDEO_A1' );
 	}
 
 	/**
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpUrlForVideo() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp, Niztech_Youtube::TYPE_OPTION_VIDEO);
-		$this->assertEquals($result, 'VIDEO_B1');
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp,
+			Niztech_Youtube::TYPE_OPTION_VIDEO );
+		$this->assertEquals( $result, 'VIDEO_B1' );
 	}
 
 	/**
@@ -95,23 +97,25 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @expectedException \Exception
 	 */
 	public function testExtract_youtube_code_withNoneValidUrlForVideo() {
-		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_VIDEO);
+		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_VIDEO );
 	}
 
 	/**
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpsUrlForPlaylist() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps ,Niztech_Youtube::TYPE_OPTION_PLAYLIST);
-		$this->assertEquals($result, 'PLAYLIST_A');
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps,
+			Niztech_Youtube::TYPE_OPTION_PLAYLIST );
+		$this->assertEquals( $result, 'PLAYLIST_A' );
 	}
 
 	/**
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpUrlForPlaylist() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp, Niztech_Youtube::TYPE_OPTION_PLAYLIST);
-		$this->assertEquals($result, 'PLAYLIST_B');
+		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp,
+			Niztech_Youtube::TYPE_OPTION_PLAYLIST );
+		$this->assertEquals( $result, 'PLAYLIST_B' );
 	}
 
 	/**
@@ -119,7 +123,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @expectedException \Exception
 	 */
 	public function testExtract_youtube_code_withNoneValidUrlForPlaylist() {
-		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_PLAYLIST);
+		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_PLAYLIST );
 	}
 
 	public function testVideo_source_get_meta() {
