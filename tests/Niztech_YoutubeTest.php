@@ -39,6 +39,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testInit_hooks() {
 
 	}
+	*/
 
 	/**
 	 * @group is_youtube_url
@@ -64,6 +65,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->assertFalse( $result );
 	}
 
+	/*
 	public function testGet_local_playlist_row() {
 
 	}
@@ -83,6 +85,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testCreate_empty_local_playlist_row() {
 
 	}
+	*/
 
 	/**
 	 * @group extract_youtube_code
@@ -136,6 +139,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->class_instance->extract_youtube_code( $this->notValidUrl, Niztech_Youtube::TYPE_OPTION_PLAYLIST );
 	}
 
+	/*
 	public function testVideo_source_get_meta() {
 
 	}
@@ -163,11 +167,43 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testSet_youtube_api_key() {
 
 	}
+	*/
 
+	/**
+	 * @group commit_video_data_to_wp
+	 */
 	public function testCommit_video_data_to_wp() {
+		$fakeData = array(
+			'post_id' => '1111',
+			'code' => 'YTCODE00001',
+			'data' => array(
+				'snippet' => array(
+					'title' => 'Title A',
+					'description' => 'Description A',
+					'thumbnails' => array()
+				)
+			)
+		);
 
+		$this->class_instance->commit_video_data_to_wp( $fakeData['post_id'], (object) $fakeData['data'], $fakeData['code']);
+
+		global $wpdb;
+		$post_id = $fakeData['post_id'];
+		$tableName = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+		$actual_row = $wpdb->get_row( "select post_id, playlist_id, youtube_video_code, title, description, last_update from $tableName where post_id = '$post_id'" );
+
+		$expected_row = (object) array(
+			'post_id' => $fakeData['post_id'],
+			'playlist_id' => '0',
+			'youtube_video_code' => $fakeData['code'],
+			'title' => $fakeData['data']['snippet']['title'],
+			'description' => $fakeData['data']['snippet']['description'],
+			'last_update' => $this->today->format( 'Y-m-d H:i:s' ),
+		);
+		$this->assertEquals( $expected_row, $actual_row );
 	}
 
+	/*
 	public function testV2_delete_playlist_by_id() {
 
 	}
@@ -211,4 +247,5 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testVerify_key() {
 
 	}
+	*/
 }
