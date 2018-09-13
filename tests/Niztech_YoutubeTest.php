@@ -15,13 +15,23 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	private $validUrlHttps = 'https://www.youtube.com/watch?v=VIDEO_A1&list=PLAYLIST_A';
 	private $validUrlHttp = 'http://www.youtube.com/watch?v=VIDEO_B1&list=PLAYLIST_B';
 	private $notValidUrl = 'http://www.notYuetube.com/v/ABC123';
+	private $today;
 
 	public function setUp() {
 		parent::setUp();
-
+		$this->today          = new DateTime();
 		$this->class_instance = new Niztech_Youtube();
+		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
+		$this->class_instance->create_table_playlist();
+		$this->class_instance->create_table_video();
+		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
 	}
 
+	public function tearDown() {
+		parent::tearDown();
+	}
+
+	/*
 	public function testV2_delete_video_by_post_playlist() {
 
 	}
