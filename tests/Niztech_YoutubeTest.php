@@ -175,30 +175,37 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testCommit_video_data_to_wp() {
 		$fakeData = array(
 			'post_id' => '1111',
-			'code' => 'YTCODE00001',
-			'data' => array(
+			'code'    => 'YTCODE00001',
+			'data'    => array(
 				'snippet' => array(
-					'title' => 'Title A',
+					'title'       => 'Title A',
 					'description' => 'Description A',
-					'thumbnails' => array()
+					'thumbnails'  => array()
 				)
 			)
 		);
 
-		$this->class_instance->commit_video_data_to_wp( $fakeData['post_id'], (object) $fakeData['data'], $fakeData['code']);
+		$this->class_instance->commit_video_data_to_wp(
+			$fakeData['post_id'],
+			$fakeData['code'],
+			0,
+			$fakeData['data']['snippet']['title'],
+			$fakeData['data']['snippet']['description'],
+			$fakeData['data']['snippet']['thumbnails']
+		);
 
 		global $wpdb;
-		$post_id = $fakeData['post_id'];
-		$tableName = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+		$post_id    = $fakeData['post_id'];
+		$tableName  = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
 		$actual_row = $wpdb->get_row( "select post_id, playlist_id, youtube_video_code, title, description, last_update from $tableName where post_id = '$post_id'" );
 
 		$expected_row = (object) array(
-			'post_id' => $fakeData['post_id'],
-			'playlist_id' => '0',
+			'post_id'            => $fakeData['post_id'],
+			'playlist_id'        => '0',
 			'youtube_video_code' => $fakeData['code'],
-			'title' => $fakeData['data']['snippet']['title'],
-			'description' => $fakeData['data']['snippet']['description'],
-			'last_update' => $this->today->format( 'Y-m-d H:i:s' ),
+			'title'              => $fakeData['data']['snippet']['title'],
+			'description'        => $fakeData['data']['snippet']['description'],
+			'last_update'        => $this->today->format( 'Y-m-d H:i:s' ),
 		);
 		$this->assertEquals( $expected_row, $actual_row );
 	}

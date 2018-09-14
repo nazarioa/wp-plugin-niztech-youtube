@@ -196,8 +196,14 @@ class Niztech_Youtube {
 
 		// Take $data and stores it into database
 		foreach ( $data as $datum ) {
-			Niztech_Youtube::commit_video_data_to_wp( $post_id, $datum, $datum->snippet->resourceId->videoId,
-				$playlist_id );
+			Niztech_Youtube::commit_video_data_to_wp(
+				$post_id,
+				$playlist_id,
+				$datum->snippet->resourceId->videoId,
+				$datum->snippet->title,
+				$datum->snippet->description,
+				$datum->snippet->thumbnails
+			);
 		}
 
 		$today = new DateTime();
@@ -210,11 +216,20 @@ class Niztech_Youtube {
 
 	/**
 	 * @param $post_id
-	 * @param $data
 	 * @param $video_code
 	 * @param int $playlist_id
+	 * @param string $title
+	 * @param string $description
+	 * @param array $thumbnails
 	 */
-	public static function commit_video_data_to_wp( $post_id, $data, $video_code, $playlist_id = 0 ) {
+	public static function commit_video_data_to_wp(
+		$post_id,
+		$video_code,
+		$playlist_id = 0,
+		$title = '',
+		$description = '',
+		$thumbnails = array()
+	) {
 		global $wpdb;
 
 		$today = new DateTime();
@@ -224,12 +239,12 @@ class Niztech_Youtube {
 			'post_id'            => $post_id,
 			'playlist_id'        => $playlist_id,
 			'youtube_video_code' => $video_code,
-			'title'              => $data->snippet->title ?? '',
+			'title'              => $title,
 			'last_update'        => $today->format( 'Y-m-d H:i:s' ),
-			'description'        => $data->snippet->description ?? '',
+			'description'        => $description,
 		);
 
-		$thumbnails = self::process_Google_Service_YouTube_ThumbnailDetails( $data->snippet->thumbnails );
+		$thumbnails = self::process_Google_Service_YouTube_ThumbnailDetails( $thumbnails );
 
 		$to_commit = array_merge( $generic_video_data, $thumbnails );
 
@@ -333,7 +348,14 @@ class Niztech_Youtube {
 			if ( ! empty( $raw_data ) ) {
 				// Remove existing data
 				Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, 0 );
-				Niztech_Youtube::commit_video_data_to_wp( $post_id, $raw_data, $youtube_video_code );
+				Niztech_Youtube::commit_video_data_to_wp(
+					$post_id,
+					0,
+					$youtube_video_code,
+					$raw_data->snippet->title,
+					$raw_data->snippet->description,
+					$raw_data->snippet->thumbnails
+				);
 			}
 		}
 
