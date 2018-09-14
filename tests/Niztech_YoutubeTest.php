@@ -174,9 +174,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 */
 	public function testCommit_video_data_to_wp() {
 		$fakeData = array(
-			'post_id' => '1111',
-			'code'    => 'YTCODE00001',
-			'data'    => array(
+			'post_id'     => '1111',
+			'code'        => 'YTCODE00001',
+			'playlist_id' => '0',
+			'data'        => array(
 				'snippet' => array(
 					'title'       => 'Title A',
 					'description' => 'Description A',
@@ -188,7 +189,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->class_instance->commit_video_data_to_wp(
 			$fakeData['post_id'],
 			$fakeData['code'],
-			0,
+			$fakeData['playlist_id'],
 			$fakeData['data']['snippet']['title'],
 			$fakeData['data']['snippet']['description'],
 			$fakeData['data']['snippet']['thumbnails']
@@ -201,7 +202,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 
 		$expected_row = (object) array(
 			'post_id'            => $fakeData['post_id'],
-			'playlist_id'        => '0',
+			'playlist_id'        => $fakeData['playlist_id'],
 			'youtube_video_code' => $fakeData['code'],
 			'title'              => $fakeData['data']['snippet']['title'],
 			'description'        => $fakeData['data']['snippet']['description'],
