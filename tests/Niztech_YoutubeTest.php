@@ -17,15 +17,65 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	private $notValidUrl = 'http://www.notYuetube.com/v/ABC123';
 	private $today;
 
-	private $fakeVideo = array(
-		'post_id'     => '1111',
-		'code'        => 'YTCODE00001',
-		'playlist_id' => '0',
-		'data'        => array(
-			'snippet' => array(
-				'title'       => 'Title A',
-				'description' => 'Description A',
-				'thumbnails'  => array()
+	private $fakeVideos = array(
+		array(
+			'post_id'     => '1111',
+			'code'        => 'YTCODE00001',
+			'playlist_id' => '0',
+			'data'        => array(
+				'snippet' => array(
+					'title'       => 'Title A',
+					'description' => 'Description A',
+					'thumbnails'  => array()
+				)
+			)
+		),
+		array(
+			'post_id'     => '1112',
+			'code'        => 'YTCODE00002',
+			'playlist_id' => '0',
+			'data'        => array(
+				'snippet' => array(
+					'title'       => 'Title B',
+					'description' => 'Description B',
+					'thumbnails'  => array()
+				)
+			)
+		),
+		array(
+			'post_id'     => '1113',
+			'code'        => 'YTCODE00003',
+			'playlist_id' => '0',
+			'data'        => array(
+				'snippet' => array(
+					'title'       => 'Title C',
+					'description' => 'Description C',
+					'thumbnails'  => array()
+				)
+			)
+		),
+		array(
+			'post_id'     => '2221',
+			'code'        => 'YTCODE00021',
+			'playlist_id' => '1',
+			'data'        => array(
+				'snippet' => array(
+					'title'       => 'Title 2A',
+					'description' => 'Description 2A',
+					'thumbnails'  => array()
+				)
+			)
+		),
+		array(
+			'post_id'     => '2222',
+			'code'        => 'YTCODE00022',
+			'playlist_id' => '1',
+			'data'        => array(
+				'snippet' => array(
+					'title'       => 'Title 2B',
+					'description' => 'Description 2B',
+					'thumbnails'  => array()
+				)
 			)
 		)
 	);
@@ -168,11 +218,37 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testQuery_playlist_data_from_youtube() {
 
 	}
+	*/
 
+	/**
+	 * @group V2_delete_video_by_id
+	 */
 	public function testV2_delete_video_by_id() {
+		// Add a new row and check that is went in
+		$this->class_instance->commit_video_data_to_wp(
+			$this->fakeVideos[0]['post_id'],
+			$this->fakeVideos[0]['code'],
+			$this->fakeVideos[0]['playlist_id'],
+			$this->fakeVideos[0]['data']['snippet']['title'],
+			$this->fakeVideos[0]['data']['snippet']['description'],
+			$this->fakeVideos[0]['data']['snippet']['thumbnails']
+		);
 
+		global $wpdb;
+		$table_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+
+		$inital_row = $wpdb->get_row( 'select id from ' . $table_name . ' where post_id = "' . $this->fakeVideos[0]['post_id'] . '";' );
+		$this->assertNotNull( $inital_row );
+
+		// Now delete it
+		$this->class_instance->V2_delete_video_by_id( $inital_row->id );
+
+		// Assert that it has been removed
+		$removed_row = $wpdb->get_row( 'select id from ' . $table_name . ' where post_id = "' . $this->fakeVideos[0]['post_id'] . '";' );
+		$this->assertNull( $removed_row );
 	}
 
+	/*
 	public function testEnter_api_key() {
 
 	}
@@ -188,25 +264,25 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testCommit_video_data_to_wp() {
 
 		$this->class_instance->commit_video_data_to_wp(
-			$this->fakeVideo['post_id'],
-			$this->fakeVideo['code'],
-			$this->fakeVideo['playlist_id'],
-			$this->fakeVideo['data']['snippet']['title'],
-			$this->fakeVideo['data']['snippet']['description'],
-			$this->fakeVideo['data']['snippet']['thumbnails']
+			$this->fakeVideos[0]['post_id'],
+			$this->fakeVideos[0]['code'],
+			$this->fakeVideos[0]['playlist_id'],
+			$this->fakeVideos[0]['data']['snippet']['title'],
+			$this->fakeVideos[0]['data']['snippet']['description'],
+			$this->fakeVideos[0]['data']['snippet']['thumbnails']
 		);
 
 		global $wpdb;
-		$post_id    = $this->fakeVideo['post_id'];
+		$post_id    = $this->fakeVideos[0]['post_id'];
 		$tableName  = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
 		$actual_row = $wpdb->get_row( "select post_id, playlist_id, youtube_video_code, title, description, last_update from $tableName where post_id = '$post_id'" );
 
 		$expected_row = (object) array(
-			'post_id'            => $this->fakeVideo['post_id'],
-			'playlist_id'        => $this->fakeVideo['playlist_id'],
-			'youtube_video_code' => $this->fakeVideo['code'],
-			'title'              => $this->fakeVideo['data']['snippet']['title'],
-			'description'        => $this->fakeVideo['data']['snippet']['description'],
+			'post_id'            => $this->fakeVideos[0]['post_id'],
+			'playlist_id'        => $this->fakeVideos[0]['playlist_id'],
+			'youtube_video_code' => $this->fakeVideos[0]['code'],
+			'title'              => $this->fakeVideos[0]['data']['snippet']['title'],
+			'description'        => $this->fakeVideos[0]['data']['snippet']['description'],
 			'last_update'        => $this->today->format( 'Y-m-d H:i:s' ),
 		);
 		$this->assertEquals( $expected_row, $actual_row );
