@@ -136,11 +136,19 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	public function testGet_video_info_for() {
 
 	}
+	*/
 
-	public function testCommit_playlist_data_to_wp() {
-
+	/**
+	 * @group commit_playlist_data_to_wp
+	 */
+	public function testCommit_playlist_data_to_wpShouldReturnFalseIfPlaylistIdIsNull() {
+		$result = $this->class_instance->commit_playlist_data_to_wp( null, 'fake',
+			array( $this->fakeVideos[0], $this->fakeVideos[1] ) );
+		// TODO: Improve test by spying on other methods and asserting that they aren't called.
+		$this->assertNull( $result );
 	}
 
+	/*
 	public function testPlugin_deactivation() {
 
 	}
