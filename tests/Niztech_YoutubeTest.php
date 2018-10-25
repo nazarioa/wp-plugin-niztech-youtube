@@ -167,10 +167,12 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group commit_playlist_data_to_wp
 	 */
 	public function testCommit_playlist_data_to_wpShouldReturnFalseIfPostIdIsNull() {
-		$result = $this->class_instance->commit_playlist_data_to_wp( 'fake', null,
-			array( $this->fakeVideos[0], $this->fakeVideos[1] ) );
+		$this->class_instance->commit_playlist_data_to_wp( 'fake', null,
+			array( $this->fakeVideos[0]['data'], $this->fakeVideos[1]['data'] ) );
 		// TODO: Improve test by spying on other methods and asserting that they aren't called.
-		$this->assertNull( $result );
+		global $wpdb;
+		$playlistData = $wpdb->get_row( 'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST, 'OBJECT' );
+		$this->assertNull( $playlistData );
 	}
 
 	/*
