@@ -24,6 +24,9 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'playlist_id' => '0',
 			'data'        => array(
 				'snippet' => array(
+					'resourceId'  => array(
+						'videoId' => 'YTCODE00001'
+					),
 					'title'       => 'Title A',
 					'description' => 'Description A',
 					'thumbnails'  => array()
@@ -36,6 +39,9 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'playlist_id' => '0',
 			'data'        => array(
 				'snippet' => array(
+					'resourceId'  => array(
+						'videoId' => 'YTCODE00002'
+					),
 					'title'       => 'Title B',
 					'description' => 'Description B',
 					'thumbnails'  => array()
@@ -48,6 +54,9 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'playlist_id' => '0',
 			'data'        => array(
 				'snippet' => array(
+					'resourceId'  => array(
+						'videoId' => 'YTCODE00003'
+					),
 					'title'       => 'Title C',
 					'description' => 'Description C',
 					'thumbnails'  => array()
@@ -60,6 +69,9 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'playlist_id' => '1',
 			'data'        => array(
 				'snippet' => array(
+					'resourceId'  => array(
+						'videoId' => 'YTCODE00021'
+					),
 					'title'       => 'Title 2A',
 					'description' => 'Description 2A',
 					'thumbnails'  => array()
@@ -72,6 +84,9 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'playlist_id' => '1',
 			'data'        => array(
 				'snippet' => array(
+					'resourceId'  => array(
+						'videoId' => 'YTCODE00022'
+					),
 					'title'       => 'Title 2B',
 					'description' => 'Description 2B',
 					'thumbnails'  => array()
