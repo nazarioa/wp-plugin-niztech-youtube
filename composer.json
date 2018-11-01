@@ -1,15 +1,16 @@
 {
     "name": "nazarioa/niztech-youtube",
     "type": "wordpress-plugin",
+    "require": {
+        "composer/installers": "~1.0",
+        "google/apiclient": "^2.2"
+    },
     "authors": [
         {
             "name": "Nazario A. Ayala",
             "email": "nazario@niztech.com"
         }
     ],
-    "require": {
-        "google/apiclient": "^2.2"
-    },
     "require-dev": {
         "phpunit/phpunit": "^6.0"
     }
