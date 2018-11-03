@@ -198,8 +198,8 @@ class Niztech_Youtube {
 		foreach ( $data as $datum ) {
 			Niztech_Youtube::commit_video_data_to_wp(
 				$post_id,
-				$playlist_id,
 				$datum->snippet->resourceId->videoId,
+				$playlist_id,
 				$datum->snippet->title,
 				$datum->snippet->description,
 				$datum->snippet->thumbnails
