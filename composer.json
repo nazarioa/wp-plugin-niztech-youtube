@@ -1,9 +1,13 @@
 {
     "name": "nazarioa/niztech-youtube",
     "type": "wordpress-plugin",
+    "description": "Plugin that interfaces with Googles API",
+    "keywords": ["wordpress", "plugin"],
+    "homepage": "https://github.com/nazarioa/wp-plugin-niztech-youtube",
     "require": {
         "composer/installers": "~1.0",
-        "google/apiclient": "^2.2"
+        "google/apiclient": "^2.2",
+        "php": ">=7.0"
     },
     "authors": [
         {
