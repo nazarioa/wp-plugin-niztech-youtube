@@ -8,10 +8,13 @@
   Author URI: https://www.embedplus.com
  */
 
-if ( ! file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
+if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} elseif ( file_exists( $file = __DIR__ . '/vendor_committed/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor_committed/autoload.php';
+} else {
 	throw new \Exception( 'please run "composer install in "' . __DIR__ . '"' );
 }
-require_once __DIR__ . '/vendor/autoload.php';
 
 if ( ! function_exists( 'add_action' ) ) {
 	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
