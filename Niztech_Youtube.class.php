@@ -186,6 +186,8 @@ class Niztech_Youtube {
 	 * @param $playlist_id
 	 * @param $post_id
 	 * @param array $data
+	 *
+	 * @throws Exception
 	 */
 	public static function commit_playlist_data_to_wp( $playlist_id, $post_id, array $data ) {
 		global $wpdb;
@@ -221,6 +223,8 @@ class Niztech_Youtube {
 	 * @param string $title
 	 * @param string $description
 	 * @param array $thumbnails
+	 *
+	 * @throws Exception
 	 */
 	public static function commit_video_data_to_wp(
 		$post_id,
@@ -261,6 +265,7 @@ class Niztech_Youtube {
 	 * @param bool $bypass_cached_data
 	 *
 	 * @return array of objects
+	 * @throws Exception
 	 */
 	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ) {
 		global $wpdb;
