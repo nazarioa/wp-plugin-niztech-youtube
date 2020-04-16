@@ -4,8 +4,8 @@
   Plugin URI: https://www.niztech.com
   Description: Simple YouTube data source
   Version: 1.0.0
-  Author: EmbedPlus Team
-  Author URI: https://www.embedplus.com
+  Author: Niztech
+  Author URI: https://www.niztech.com
  */
 
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
