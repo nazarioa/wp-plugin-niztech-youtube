@@ -87,6 +87,8 @@ class Niztech_Youtube_Admin {
 	 * This function gets called from the admin page, specifically a metabox screen.
 	 *
 	 * @param $post_id
+	 *
+	 * @throws Exception
 	 */
 	public static function video_source_save( $post_id ) {
 		$youtube_url             = esc_attr( $_POST['niztech_video_youtube_url'] ?? '' );
