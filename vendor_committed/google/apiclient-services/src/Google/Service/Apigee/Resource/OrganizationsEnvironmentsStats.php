@@ -41,17 +41,13 @@ class Google_Service_Apigee_Resource_OrganizationsEnvironmentsStats extends Goog
    * `organizations/{org}/environments/{env}/stats/apiproxy,request_verb`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool realtime Legacy field: not used anymore
-   * @opt_param string tzo This parameters contains the timezone offset value
-   * @opt_param string sortby Comma separated list of columns to sort the final
-   * result.
    * @opt_param string filter Enables drill-down on specific dimension values
+   * @opt_param string timeUnit A value of second, minute, hour, day, week, month.
+   * Time Unit specifies the granularity of metrics returned.
    * @opt_param string aggTable If customers want to query custom aggregate
    * tables, then this parameter can be used to specify the table name. If this
    * parameter is skipped, then Edge Query will try to retrieve the data from fact
    * tables which will be expensive.
-   * @opt_param string timeUnit A value of second, minute, hour, day, week, month.
-   * Time Unit specifies the granularity of metrics returned.
    * @opt_param string sort This parameter specifies if the sort order should be
    * ascending or descending Supported values are DESC and ASC.
    * @opt_param string topk Take 'top k' results from results, for example, to
@@ -72,6 +68,10 @@ class Google_Service_Apigee_Resource_OrganizationsEnvironmentsStats extends Goog
    * to '10'.
    * @opt_param bool sonar This parameter routes the query to api monitoring
    * service for last hour
+   * @opt_param bool realtime Legacy field: not used anymore
+   * @opt_param string tzo This parameters contains the timezone offset value
+   * @opt_param string sortby Comma separated list of columns to sort the final
+   * result.
    * @return Google_Service_Apigee_GoogleCloudApigeeV1Stats
    */
   public function get($name, $optParams = array())

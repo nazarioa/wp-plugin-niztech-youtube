@@ -82,8 +82,8 @@ class Google_Service_Apigee_Resource_OrganizationsEnvironments extends Google_Se
    * @param array $optParams Optional parameters.
    *
    * @opt_param string repo Required. Repository name
-   * @opt_param string contentType Content-Type for uploaded file.
    * @opt_param string relativeFilePath Required. Relative path to the GCS bucket
+   * @opt_param string contentType Content-Type for uploaded file.
    * @opt_param string dataset Required. Dataset could be one of `api`, `mint`,
    * `trace` and `event`
    * @return Google_Service_Apigee_GoogleCloudApigeeV1DataLocation

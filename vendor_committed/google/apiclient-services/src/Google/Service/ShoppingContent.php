@@ -53,6 +53,8 @@ class Google_Service_ShoppingContent extends Google_Service
   public $regionalinventory;
   public $returnaddress;
   public $returnpolicy;
+  public $settlementreports;
+  public $settlementtransactions;
   public $shippingsettings;
   
   /**
@@ -1637,6 +1639,95 @@ class Google_Service_ShoppingContent extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->settlementreports = new Google_Service_ShoppingContent_Resource_Settlementreports(
+        $this,
+        $this->serviceName,
+        'settlementreports',
+        array(
+          'methods' => array(
+            'get' => array(
+              'path' => '{merchantId}/settlementreports/{settlementId}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'merchantId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'settlementId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => '{merchantId}/settlementreports',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'merchantId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'maxResults' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'transferEndDate' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'transferStartDate' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->settlementtransactions = new Google_Service_ShoppingContent_Resource_Settlementtransactions(
+        $this,
+        $this->serviceName,
+        'settlementtransactions',
+        array(
+          'methods' => array(
+            'list' => array(
+              'path' => '{merchantId}/settlementreports/{settlementId}/transactions',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'merchantId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'settlementId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'maxResults' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'transactionIds' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
               ),
             ),

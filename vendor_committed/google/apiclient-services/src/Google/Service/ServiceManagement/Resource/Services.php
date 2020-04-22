@@ -26,8 +26,15 @@
 class Google_Service_ServiceManagement_Resource_Services extends Google_Service_Resource
 {
   /**
-   * Creates a new managed service. Please note one producer project can own no
-   * more than 20 services.
+   * Creates a new managed service.
+   *
+   * A managed service is immutable, and is subject to mandatory 30-day data
+   * retention. You cannot move a service or recreate it within 30 days after
+   * deletion.
+   *
+   * One producer project can own no more than 500 services. For security and
+   * reliability purposes, a production service should be hosted in a dedicated
+   * producer project.
    *
    * Operation (services.create)
    *

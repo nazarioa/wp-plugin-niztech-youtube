@@ -30,8 +30,9 @@ class Google_Service_DataCatalog_Resource_ProjectsLocationsEntryGroupsEntries ex
    * be created.
    *
    * Users should enable the Data Catalog API in the project identified by the
-   * `parent` parameter (see [Data Catalog Resource Project] (/data-
-   * catalog/docs/concepts/resource-project) for more information).
+   * `parent` parameter (see [Data Catalog Resource Project]
+   * (https://cloud.google.com/data-catalog/docs/concepts/resource-project) for
+   * more information).
    *
    * A maximum of 100,000 entries may be created per entry group. (entries.create)
    *
@@ -58,8 +59,8 @@ class Google_Service_DataCatalog_Resource_ProjectsLocationsEntryGroupsEntries ex
    * Deletes an existing entry. Only entries created through CreateEntry method
    * can be deleted. Users should enable the Data Catalog API in the project
    * identified by the `name` parameter (see [Data Catalog Resource Project]
-   * (/data-catalog/docs/concepts/resource-project) for more information).
-   * (entries.delete)
+   * (https://cloud.google.com/data-catalog/docs/concepts/resource-project) for
+   * more information). (entries.delete)
    *
    * @param string $name Required. The name of the entry. Example:
    *
@@ -96,9 +97,8 @@ class Google_Service_DataCatalog_Resource_ProjectsLocationsEntryGroupsEntries ex
    * resource exists but does not have a policy set on it.
    *
    * Supported resources are:   - Tag templates.   - Entries.   - Entry groups.
-   * Note, this method cannot be used to manage policies for BigQuery, Cloud
-   * Pub/Sub and any external Google Cloud Platform resources synced to Cloud Data
-   * Catalog.
+   * Note, this method cannot be used to manage policies for BigQuery, Pub/Sub and
+   * any external Google Cloud Platform resources synced to Data Catalog.
    *
    * Callers must have following Google IAM permission   -
    * `datacatalog.tagTemplates.getIamPolicy` to get policies on tag     templates.
@@ -147,8 +147,8 @@ class Google_Service_DataCatalog_Resource_ProjectsLocationsEntryGroupsEntries ex
   /**
    * Updates an existing entry. Users should enable the Data Catalog API in the
    * project identified by the `entry.name` parameter (see [Data Catalog Resource
-   * Project] (/data-catalog/docs/concepts/resource-project) for more
-   * information). (entries.patch)
+   * Project] (https://cloud.google.com/data-catalog/docs/concepts/resource-
+   * project) for more information). (entries.patch)
    *
    * @param string $name The Data Catalog resource name of the entry in URL
    * format. Example:
@@ -184,9 +184,8 @@ class Google_Service_DataCatalog_Resource_ProjectsLocationsEntryGroupsEntries ex
    * error).
    *
    * Supported resources are:   - Tag templates.   - Entries.   - Entry groups.
-   * Note, this method cannot be used to manage policies for BigQuery, Cloud
-   * Pub/Sub and any external Google Cloud Platform resources synced to Cloud Data
-   * Catalog.
+   * Note, this method cannot be used to manage policies for BigQuery, Pub/Sub and
+   * any external Google Cloud Platform resources synced to Data Catalog.
    *
    * A caller is not required to have Google IAM permission to make this request.
    * (entries.testIamPermissions)

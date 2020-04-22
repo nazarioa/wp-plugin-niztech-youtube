@@ -66,8 +66,8 @@ class Google_Service_Apigee_Resource_OrganizationsConsumerresources extends Goog
    * `organizations/{organization_id}`
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string zmsId
    * @opt_param string q
+   * @opt_param string zmsId
    * @return Google_Service_Apigee_GoogleCloudApigeeV1PortalResourceCollection
    */
   public function pages($parent, $optParams = array())
