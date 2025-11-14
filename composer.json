@@ -2,6 +2,7 @@
 	"name": "nazarioa/niztech-youtube",
 	"type": "wordpress-plugin",
 	"description": "Plugin that interfaces with Google's API",
+	"license": "proprietary",
 	"keywords": [
 		"nazarioa",
 		"plugin",
