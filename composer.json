@@ -14,7 +14,7 @@
 	"require": {
 		"composer/installers": "~1.0",
 		"google/apiclient": "^2.2",
-		"php": ">=8.4"
+		"php": ">=8.4.0"
 	},
 	"authors": [
 		{
