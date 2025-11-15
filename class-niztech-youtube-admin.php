@@ -1,5 +1,8 @@
 <?php
 /**
+ * @file
+ * Logic for administrative view of `Niztech_Youtube`
+ *
  * Created by PhpStorm.
  * User: nazario
  * Date: 6/10/18
