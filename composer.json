@@ -16,6 +16,10 @@
 		"google/apiclient": "^2.2",
 		"php": ">=8.2"
 	},
+	"require-dev": {
+		"codeception/codeception": "^5.3",
+		"wp-coding-standards/wpcs": "^3.0"
+	},
 	"authors": [
 		{
 			"name": "Nazario A. Ayala",
@@ -24,7 +28,8 @@
 	],
 	"config": {
 		"allow-plugins": {
-			"composer/installers": true
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	}
 }
