@@ -13,8 +13,8 @@
  */
 class Niztech_YoutubeTest extends WP_UnitTestCase {
 	private $validUrlHttps = 'https://www.youtube.com/watch?v=VIDEO_A1&list=PLAYLIST_A';
-	private $validUrlHttp = 'http://www.youtube.com/watch?v=VIDEO_B1&list=PLAYLIST_B';
-	private $notValidUrl = 'http://www.notYuetube.com/v/ABC123';
+	private $validUrlHttp  = 'http://www.youtube.com/watch?v=VIDEO_B1&list=PLAYLIST_B';
+	private $notValidUrl   = 'http://www.notYuetube.com/v/ABC123';
 	private $today;
 
 	private $fakeVideos = array(
@@ -25,13 +25,13 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'data'        => array(
 				'snippet' => array(
 					'resourceId'  => array(
-						'videoId' => 'YTCODE00001'
+						'videoId' => 'YTCODE00001',
 					),
 					'title'       => 'Title A',
 					'description' => 'Description A',
-					'thumbnails'  => array()
-				)
-			)
+					'thumbnails'  => array(),
+				),
+			),
 		),
 		array(
 			'post_id'     => '1112',
@@ -40,13 +40,13 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'data'        => array(
 				'snippet' => array(
 					'resourceId'  => array(
-						'videoId' => 'YTCODE00002'
+						'videoId' => 'YTCODE00002',
 					),
 					'title'       => 'Title B',
 					'description' => 'Description B',
-					'thumbnails'  => array()
-				)
-			)
+					'thumbnails'  => array(),
+				),
+			),
 		),
 		array(
 			'post_id'     => '1113',
@@ -55,13 +55,13 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'data'        => array(
 				'snippet' => array(
 					'resourceId'  => array(
-						'videoId' => 'YTCODE00003'
+						'videoId' => 'YTCODE00003',
 					),
 					'title'       => 'Title C',
 					'description' => 'Description C',
-					'thumbnails'  => array()
-				)
-			)
+					'thumbnails'  => array(),
+				),
+			),
 		),
 		array(
 			'post_id'     => '2221',
@@ -70,13 +70,13 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'data'        => array(
 				'snippet' => array(
 					'resourceId'  => array(
-						'videoId' => 'YTCODE00021'
+						'videoId' => 'YTCODE00021',
 					),
 					'title'       => 'Title 2A',
 					'description' => 'Description 2A',
-					'thumbnails'  => array()
-				)
-			)
+					'thumbnails'  => array(),
+				),
+			),
 		),
 		array(
 			'post_id'     => '2222',
@@ -85,14 +85,14 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 			'data'        => array(
 				'snippet' => array(
 					'resourceId'  => array(
-						'videoId' => 'YTCODE00022'
+						'videoId' => 'YTCODE00022',
 					),
 					'title'       => 'Title 2B',
 					'description' => 'Description 2B',
-					'thumbnails'  => array()
-				)
-			)
-		)
+					'thumbnails'  => array(),
+				),
+			),
+		),
 	);
 
 	public function setUp(): void {
@@ -157,8 +157,11 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group commit_playlist_data_to_wp
 	 */
 	public function testCommit_playlist_data_to_wpShouldReturnFalseIfPlaylistIdIsNull() {
-		$result = $this->class_instance->commit_playlist_data_to_wp( null, 'fake',
-			array( $this->fakeVideos[0], $this->fakeVideos[1] ) );
+		$result = $this->class_instance->commit_playlist_data_to_wp(
+			null,
+			'fake',
+			array( $this->fakeVideos[0], $this->fakeVideos[1] )
+		);
 		// TODO: Improve test by spying on other methods and asserting that they aren't called.
 		$this->assertNull( $result );
 	}
@@ -167,8 +170,11 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group commit_playlist_data_to_wp
 	 */
 	public function testCommit_playlist_data_to_wpShouldReturnFalseIfPostIdIsNull() {
-		$this->class_instance->commit_playlist_data_to_wp( 'fake', null,
-			array( $this->fakeVideos[0]['data'], $this->fakeVideos[1]['data'] ) );
+		$this->class_instance->commit_playlist_data_to_wp(
+			'fake',
+			null,
+			array( $this->fakeVideos[0]['data'], $this->fakeVideos[1]['data'] )
+		);
 		// TODO: Improve test by spying on other methods and asserting that they aren't called.
 		global $wpdb;
 		$playlistData = $wpdb->get_row( 'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST, 'OBJECT' );
@@ -189,8 +195,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpsUrlForVideo() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps,
-			Niztech_Youtube::TYPE_OPTION_VIDEO );
+		$result = $this->class_instance->extract_youtube_code(
+			$this->validUrlHttps,
+			Niztech_Youtube::TYPE_OPTION_VIDEO
+		);
 		$this->assertEquals( $result, 'VIDEO_A1' );
 	}
 
@@ -198,8 +206,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpUrlForVideo() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp,
-			Niztech_Youtube::TYPE_OPTION_VIDEO );
+		$result = $this->class_instance->extract_youtube_code(
+			$this->validUrlHttp,
+			Niztech_Youtube::TYPE_OPTION_VIDEO
+		);
 		$this->assertEquals( $result, 'VIDEO_B1' );
 	}
 
@@ -215,8 +225,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpsUrlForPlaylist() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttps,
-			Niztech_Youtube::TYPE_OPTION_PLAYLIST );
+		$result = $this->class_instance->extract_youtube_code(
+			$this->validUrlHttps,
+			Niztech_Youtube::TYPE_OPTION_PLAYLIST
+		);
 		$this->assertEquals( $result, 'PLAYLIST_A' );
 	}
 
@@ -224,8 +236,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 	 * @group extract_youtube_code
 	 */
 	public function testExtract_youtube_code_withValidHttpUrlForPlaylist() {
-		$result = $this->class_instance->extract_youtube_code( $this->validUrlHttp,
-			Niztech_Youtube::TYPE_OPTION_PLAYLIST );
+		$result = $this->class_instance->extract_youtube_code(
+			$this->validUrlHttp,
+			Niztech_Youtube::TYPE_OPTION_PLAYLIST
+		);
 		$this->assertEquals( $result, 'PLAYLIST_B' );
 	}
 

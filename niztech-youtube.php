@@ -1,11 +1,11 @@
 <?php
 /*
-  Plugin Name: Niztech - YouTube
-  Plugin URI: https://www.niztech.com
-  Description: Simple YouTube data source
-  Version: 1.0.0
-  Author: Niztech
-  Author URI: https://www.niztech.com
+	Plugin Name: Niztech - YouTube
+	Plugin URI: https://www.niztech.com
+	Description: Simple YouTube data source
+	Version: 1.0.0
+	Author: Niztech
+	Author URI: https://www.niztech.com
  */
 
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
@@ -30,19 +30,19 @@ register_activation_hook( __FILE__, array( 'Niztech_Youtube', 'plugin_activation
 register_deactivation_hook( __FILE__, array( 'Niztech_Youtube', 'plugin_deactivation' ) );
 
 // Add class files who have hooks that are referenced in this file.
-require_once( NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube.php' );
-require_once( NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-client.php' );
-require_once( NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php' );
+require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube.php';
+require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-client.php';
+require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 
 add_action( 'init', array( 'Niztech_Youtube', 'init' ), 1 );
 
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once( NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php' );
+	require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 	add_action( 'init', array( 'Niztech_Youtube_Admin', 'init' ) );
 }
 
 
 if ( true ) {
-	require_once( NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-client.php' );
+	require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-client.php';
 	add_action( 'init', array( 'Niztech_Youtube_Client', 'init' ) );
 }

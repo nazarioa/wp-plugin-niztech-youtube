@@ -32,13 +32,16 @@ class Niztech_Youtube_Client {
 
 		if ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 
-			return $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
-			                           " WHERE playlist_id = $foreign_key_object->id;" );
+			return $wpdb->get_results(
+				'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
+										" WHERE playlist_id = $foreign_key_object->id;"
+			);
 		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
-			return $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
-			                           " WHERE post_id = $foreign_key_object->post_id AND playlist_id = 0;" );
+			return $wpdb->get_results(
+				'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
+										" WHERE post_id = $foreign_key_object->post_id AND playlist_id = 0;"
+			);
 		}
-
 	}
 
 	/**
@@ -50,14 +53,18 @@ class Niztech_Youtube_Client {
 		$videos = Niztech_Youtube_Client::video_content( $post_id );
 		$output = '';
 		if ( ! empty( $videos ) ) {
-			$videos_html     = '';
+			$videos_html = '';
 			foreach ( $videos as $video ) {
-				$videos_html .= sprintf( '<a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')" title="%s"></a>',
-					$video->youtube_video_code , $video->thumbnail_high_url,  $video->title);
+				$videos_html .= sprintf(
+					'<a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')" title="%s"></a>',
+					$video->youtube_video_code,
+					$video->thumbnail_high_url,
+					$video->title
+				);
 			}
-			$id_attrib = (empty($id) ? '' : sprintf('id="%s"', $id));
-			$class_attrib =  empty($class) ? 'class="niztech-youtube-thumbnails' : sprintf('class="niztech-youtube-thumbnails %s"', $class);
-			$output = sprintf( '<div %s">%s</div>', implode(' ', array($id_attrib,$class_attrib )), $videos_html );
+			$id_attrib    = ( empty( $id ) ? '' : sprintf( 'id="%s"', $id ) );
+			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf( 'class="niztech-youtube-thumbnails %s"', $class );
+			$output       = sprintf( '<div %s">%s</div>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
 		}
 
 		echo $output;
@@ -71,13 +78,15 @@ class Niztech_Youtube_Client {
 	 * @return string
 	 */
 	public static function video_content_shortcode( $attr ) {
-		$a = shortcode_atts( array(
-			'class'  => '',
-			'id'     => '',
-			'post' => '',
-		), $attr );
+		$a = shortcode_atts(
+			array(
+				'class' => '',
+				'id'    => '',
+				'post'  => '',
+			),
+			$attr
+		);
 
 		Niztech_Youtube_Client::video_content_html( $a['post'], $a['class'], $a['id'] );
 	}
-
 }
