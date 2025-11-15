@@ -1,11 +1,19 @@
 <?php
-/*
-	Plugin Name: Niztech - YouTube
-	Plugin URI: https://www.niztech.com
-	Description: Simple YouTube data source
-	Version: 1.0.0
-	Author: Niztech
-	Author URI: https://www.niztech.com
+/**
+ * Niztech YouTube
+ *
+ * @package     Niztech_Youtube
+ * @author      Nazario A. Ayala
+ * @copyright   Niztech
+ * @license     GPL-2.0+
+ *
+ * @wordpress-plugin
+ * Plugin Name: Niztech - YouTube
+ * Plugin URI: https://www.niztech.com
+ * Description: Simple YouTube data source
+ * Version: 1.0.1
+ * Author: Niztech
+ * Author URI: https://www.niztech.com
  */
 
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
@@ -21,7 +29,7 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.0.0' );
+define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.0.1' );
 define( 'NT_YOUTUBE_DATABASE_VERSION', 2 );
 define( 'NT_YOUTUBE__MINIMUM_WP_VERSION', '4.0' );
 define( 'NT_YOUTUBE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
