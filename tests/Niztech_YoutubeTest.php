@@ -95,7 +95,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		)
 	);
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->today          = new DateTime();
 		$this->class_instance = new Niztech_Youtube();
@@ -105,7 +105,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 	}
 
