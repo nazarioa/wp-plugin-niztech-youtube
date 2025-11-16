@@ -38,6 +38,32 @@
 						value="<?php esc_attr_e( 'Save', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>">
 			</div>
 		</form>
+
+		<form action="<?php echo esc_url( Niztech_Youtube_Admin::get_page_url() ); ?>" method="POST">
+			<h2>Content Behavior</h2>
+			<div class="niztech-youtube-row">
+				<label class="niztech-youtube-label" for="niztech-youtube-hide-video">Deleted Video Behavior</label>
+
+				<div>
+
+				<select>
+					<option>Hide (default)</option>
+					<option>Show</option>
+				</select>
+					<p>When videos are removed from YouTube, how should the content be rendered by default? <br />This behavior can be over-ridden per playlist</p>
+				</div>
+
+				<input type="hidden" name="action" value="enter-key">
+
+				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_UPDATE_KEY ); ?>
+
+				<input type="submit"
+						name="submit"
+						id="submit"
+						class="niztech-youtube-btn niztech-youtube-btn-primary"
+						value="<?php esc_attr_e( 'Save', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>">
+			</div>
+		</form>
 	</section>
 
 </main>
