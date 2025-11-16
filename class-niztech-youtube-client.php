@@ -50,21 +50,47 @@ class Niztech_Youtube_Client {
 	 * @param string $post_id
 	 */
 	public static function video_content_html( $post_id, $class = '', $id = '' ) {
-		$videos = Niztech_Youtube_Client::video_content( $post_id );
-		$output = '';
+		$videos    = Niztech_Youtube_Client::video_content( $post_id );
+		$output    = '';
+		$hideLabel = __(
+			'Hide override',
+			Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+		);
 		if ( ! empty( $videos ) ) {
 			$videos_html = '';
 			foreach ( $videos as $video ) {
-				$videos_html .= sprintf(
-					'<a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')" title="%s"></a>',
-					$video->youtube_video_code,
-					$video->thumbnail_high_url,
-					$video->title
-				);
+				$video_url      = $video->thumbnail_high_url;
+				$video_input_id = sprintf( 'post-%s-video-%s', $post_id, $video->id );
+
+				if ( empty( $video_url ) ) {
+					$videos_html .= sprintf(
+						'<li class="niztech-youtube-thumbnail"><a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')"><span class="niztech-youtube-hidden">%s</span></a><div><input id="%s" name="hidden[%s][]" value="%s" type="checkbox" checked /><label for="%s">%s</label></div></li>',
+						$video->youtube_video_code,
+						$video_url,
+						$video->title,
+						$video_input_id,
+						$post_id,
+						$video->id,
+						$video_input_id,
+						$hideLabel
+					);
+				} else {
+					$videos_html .= sprintf(
+						'<li class="niztech-youtube-thumbnail"><a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')"><span class="niztech-youtube-hidden">%s</span></a><div><input id="%s" name="hidden[%s][]" value="%s" type="checkbox" /><label for="%s">%s</label></div></li>',
+						$video->youtube_video_code,
+						$video_url,
+						$video->title,
+						$video_input_id,
+						$post_id,
+						$video->id,
+						$video_input_id,
+						$hideLabel
+					);
+				}
 			}
 			$id_attrib    = ( empty( $id ) ? '' : sprintf( 'id="%s"', $id ) );
 			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf( 'class="niztech-youtube-thumbnails %s"', $class );
-			$output       = sprintf( '<div %s">%s</div>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
+			$output       = sprintf( '<ol %s">%s</ol>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
 		}
 
 		echo $output;

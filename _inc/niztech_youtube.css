@@ -63,26 +63,36 @@
 	margin-top: 2em;
 	padding-top: 1em;
 	border-top: 1px solid #d3d3d3;
+
+	.niztech-youtube-thumbnail {
+		display: block;
+		margin: 1em;
+		padding: 1em;
+		width: 240px;
+		border: 1px solid transparent;
+		&:hover {
+			border: 1px solid #308297;
+		}
+	}
+
+	.niztech-youtube-thumbnail-picture {
+		display: block;
+		min-height: 180px;
+		width: inherit;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		border: 1px solid transparent;
+	}
 }
 
-.niztech-youtube-thumbnails .niztech-youtube-thumbnail-picture {
-	margin: 1em;
-	display: block;
-	flex-basis: 50%;
-	flex-grow: 1;
-	flex-shrink: 1;
-	/*width: 200px;*/
-	max-width: 300px;
-	/*min-width: 150px;*/
-	height: 200px;
-	min-height: 150px;
-	max-height: 300px;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
-	border: 1px solid transparent;
-}
-
-.niztech-youtube-thumbnails .niztech-youtube-thumbnail-picture:hover {
-	border: 1px solid #308297;
+.niztech-youtube-hidden {
+	border: 0;
+	clip: rect(0,0,0,0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
 }
