@@ -24,6 +24,7 @@
 
 	<section class="niztech-youtube-section">
 		<form action="<?php echo esc_url( Niztech_Youtube_Admin::get_page_url() ); ?>" method="POST">
+			<h2><?php esc_attr_e( 'Google API', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></h2>
 			<div class="niztech-youtube-row">
 				<label class="niztech-youtube-label" for="niztech-youtube-api">YouTube V3 API Key</label>
 				<input class="niztech-youtube-input" id="niztech-youtube-api" name="niztech-youtube-api"

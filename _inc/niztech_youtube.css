@@ -2,6 +2,10 @@
   width: 80%;
   margin: 2em auto 0 auto;
   font-size: 16pt;
+
+	h2 {
+		font-size: 1.2rem;
+	}
 }
 
 .niztech-youtube-mast {
@@ -27,6 +31,12 @@
   grid-gap: 1rem;
   align-items: center;
   margin: 1rem 0;
+  padding: 1rem;
+	border: 1px solid transparent;
+
+	&:hover {
+		background-color: rgba(200,200,200, 0.2);
+	}
 }
 
 .niztech-youtube-btn {
