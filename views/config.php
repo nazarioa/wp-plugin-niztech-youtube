@@ -66,4 +66,11 @@
 		</form>
 	</section>
 
+	<section class="niztech-youtube-section">
+		<div class="niztech-youtube-row">
+			<div class="niztech-youtube-label"><?php esc_attr_e( 'Database Version', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></div>
+			<div class="niztech-youtube-input"><?php echo( intval( get_option( Niztech_Youtube::PLUGIN_PREFIX . 'db_version' ), 10 ) ); ?></div>
+		</div>
+	</section>
+
 </main>

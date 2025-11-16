@@ -48,9 +48,9 @@ class Niztech_Youtube {
 	}
 
 	public static function plugin_activation() {
-		self::create_table_playlist();
-		self::create_table_video();
-		add_option( self::PLUGIN_PREFIX . 'db_version', NT_YOUTUBE_DATABASE_VERSION );
+		// run migration one step at a time
+		self::v1_initial();
+		self::v2_hide_video_override();
 	}
 
 	public static function plugin_deactivation() {
@@ -108,11 +108,23 @@ class Niztech_Youtube {
 		return 'not-valid';
 	}
 
-	public static function create_table_playlist() {
+	/**
+	 * version 1 of database migration - initial
+	 *
+	 * @return void
+	 */
+	public static function v1_initial() {
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
+		if ( $active_database_version > 1 ) {
+			return;
+		}
+
 		global $wpdb;
-		$table_name      = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
 		$charset_collate = $wpdb->get_charset_collate();
-		$sql             = "CREATE TABLE $table_name (
+
+		// create table playlist
+		$table_playlist_name = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
+		$sql_create_playlist = "CREATE TABLE $table_playlist_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			post_id bigint(20) NOT NULL,
 			youtube_playlist_code varchar(255) NOT NULL,
@@ -120,15 +132,9 @@ class Niztech_Youtube {
 			PRIMARY KEY  (id)
 		) $charset_collate;";
 
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $sql );
-	}
-
-	public static function create_table_video() {
-		global $wpdb;
-		$table_name      = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
-		$charset_collate = $wpdb->get_charset_collate();
-		$sql             = "CREATE TABLE $table_name (
+		// create table videos
+		$table_video_name       = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+		$sql_create_video_table = "CREATE TABLE $table_video_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			playlist_id mediumint(9) DEFAULT '0' NOT NULL,
 			post_id bigint(20),
@@ -155,7 +161,35 @@ class Niztech_Youtube {
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $sql );
+		dbDelta( $sql_create_playlist );
+		dbDelta( $sql_create_video_table );
+		add_option( self::PLUGIN_PREFIX . 'db_version', 1 );
+	}
+
+	/**
+	 * version 2 of database migration
+	 * adds a column
+	 *
+	 * @return void
+	 */
+	public static function v2_hide_video_override() {
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
+		if ( $active_database_version > 2 ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$table_video_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
+		$sql              = "ALTER TABLE $table_video_name ADD COLUMN IF NOT EXISTS hidden TINYINT NULL DEFAULT 0;";
+
+		$query_result = $wpdb->query( $sql );
+		if ( $query_result === false ) {
+			// error occurred
+			die();
+		} else {
+			update_option( self::PLUGIN_PREFIX . 'db_version', 2 );
+		}
 	}
 
 	/**
