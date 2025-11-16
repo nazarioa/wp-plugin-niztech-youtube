@@ -66,6 +66,12 @@ class Niztech_Youtube_Admin {
 		return $url;
 	}
 
+	/**
+	 * Adds the route and menu under "Settings"
+	 * wp-admin/options-general.php
+	 *
+	 * @return void
+	 */
 	public static function admin_menu() {
 		add_options_page(
 			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
@@ -80,6 +86,10 @@ class Niztech_Youtube_Admin {
 		include NT_YOUTUBE__PLUGIN_DIR . '/views/config.php';
 	}
 
+	/**
+	 * Adds the UI that is used to update and manage the video and playlist within admin view.
+	 * @return void
+	 */
 	public static function metabox_video_source_setup() {
 		add_action( 'add_meta_boxes', array( 'Niztech_Youtube_Admin', 'metabox_video_source_playlist' ) );
 	}
