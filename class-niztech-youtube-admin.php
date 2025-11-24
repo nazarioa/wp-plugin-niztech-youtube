@@ -24,7 +24,7 @@ class Niztech_Youtube_Admin {
 		add_action( 'load-post-new.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
 	}
 
-	public static function load_resources() {
+	public static function load_resources(): void {
 		global $hook_suffix;
 		if ( in_array(
 			$hook_suffix,
@@ -48,7 +48,7 @@ class Niztech_Youtube_Admin {
 		}
 	}
 
-	public static function get_page_url( $page = 'config' ) {
+	public static function get_page_url( $page = 'config' ): string {
 
 		$args = array( 'page' => 'niztech-youtube-config' );
 
@@ -72,7 +72,7 @@ class Niztech_Youtube_Admin {
 	 *
 	 * @return void
 	 */
-	public static function admin_menu() {
+	public static function admin_menu(): void {
 		add_options_page(
 			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
 			__( 'Niztech YouTube', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),
@@ -82,19 +82,20 @@ class Niztech_Youtube_Admin {
 		);
 	}
 
-	public static function config_page_render() {
+	public static function config_page_render(): void {
 		include NT_YOUTUBE__PLUGIN_DIR . '/views/config.php';
 	}
 
 	/**
 	 * Adds the UI that is used to update and manage the video and playlist within admin view.
+	 *
 	 * @return void
 	 */
-	public static function metabox_video_source_setup() {
+	public static function metabox_video_source_setup(): void {
 		add_action( 'add_meta_boxes', array( 'Niztech_Youtube_Admin', 'metabox_video_source_playlist' ) );
 	}
 
-	public static function metabox_video_source_playlist() {
+	public static function metabox_video_source_playlist(): void {
 		add_meta_box(
 			'metabox-source-playlist-code',
 			esc_html__( 'Playlist ID (code)', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ),  // Title
@@ -112,7 +113,7 @@ class Niztech_Youtube_Admin {
 	 *
 	 * @throws Exception
 	 */
-	public static function video_source_save( $post_id ) {
+	public static function video_source_save( $post_id ): void {
 		$youtube_url             = esc_attr( $_POST['niztech_video_youtube_url'] ?? '' );
 		$youtube_type            = esc_attr( $_POST['niztech_video_youtube_type'] ?? '' );
 		$youtube_use_as_featured = esc_attr( $_POST['niztech_video_use_youtube_featured'] ?? false );
@@ -192,7 +193,7 @@ class Niztech_Youtube_Admin {
 		}
 	}
 
-	public static function metabox_video_source_playlist_html( $post ) {
+	public static function metabox_video_source_playlist_html( $post ): void {
 		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
 		$type                = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
 		$use_yt_as_thumbnail = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail' );
@@ -246,9 +247,9 @@ class Niztech_Youtube_Admin {
 	 * @param int    $post_id The post ID the post thumbnail is to be associated with.
 	 * @param string $desc Optional. Description of the image.
 	 *
-	 * @return string|WP_Error Attachment ID, WP_Error object otherwise.
+	 * @return bool|int|WP_Error Attachment ID, WP_Error object otherwise.
 	 */
-	public static function generate_featured_image( $file, $post_id, $desc = '' ) {
+	public static function generate_featured_image( string $file, int $post_id, string $desc = '' ): bool|int|WP_Error {
 		// Set variables for storage, fix file filename for query strings.
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
 		if ( ! $matches ) {

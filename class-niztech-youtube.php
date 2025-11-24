@@ -38,7 +38,7 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function init_hooks() {
+	public static function init_hooks(): void {
 		self::$initiated = true;
 		try {
 			self::setup_youtube_google_client();
@@ -47,16 +47,17 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function plugin_activation() {
+	public static function plugin_activation(): void {
 		// run migration one step at a time
 		self::v1_initial();
 		self::v2_hide_video_override();
 	}
 
-	public static function plugin_deactivation() {
+
+	public static function plugin_deactivation(): void {
 	}
 
-	public static function enter_api_key() {
+	public static function enter_api_key(): bool {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			die( __( 'Cheatin&#8217; uh?', self::PLUGIN_TEXT_DOMAIN ) );
 		}
@@ -80,7 +81,7 @@ class Niztech_Youtube {
 		return true;
 	}
 
-	public static function get_youtube_api_key() {
+	public static function get_youtube_api_key(): string {
 		if ( ! empty( self::$youtube_v3_api_key ) ) {
 			return self::$youtube_v3_api_key;
 		}
@@ -88,7 +89,7 @@ class Niztech_Youtube {
 		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key . '' );
 	}
 
-	public static function set_youtube_api_key( $api_key ) {
+	public static function set_youtube_api_key( $api_key ): void {
 		$key_status = self::verify_key( $api_key );
 		if ( $key_status === 'valid' ) {
 			self::$notices['status']  = 'key-valid';
@@ -99,7 +100,7 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function verify_key( $api_key ) {
+	public static function verify_key( $api_key ): string {
 		// TODO: Improve on this code.
 		if ( ! empty( $api_key ) ) {
 			return 'valid';
@@ -113,7 +114,7 @@ class Niztech_Youtube {
 	 *
 	 * @return void
 	 */
-	public static function v1_initial() {
+	public static function v1_initial(): void {
 		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
 		if ( $active_database_version > 1 ) {
 			return;
@@ -172,7 +173,7 @@ class Niztech_Youtube {
 	 *
 	 * @return void
 	 */
-	public static function v2_hide_video_override() {
+	public static function v2_hide_video_override(): void {
 		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
 		if ( $active_database_version > 2 ) {
 			return;
@@ -197,7 +198,7 @@ class Niztech_Youtube {
 	 *
 	 * @return mixed
 	 */
-	public static function query_playlist_data_from_youtube( $youtube_playlist_code ) {
+	public static function query_playlist_data_from_youtube( $youtube_playlist_code ): array {
 		$response = self::$google_service->playlistItems->listPlaylistItems(
 			'snippet,contentDetails',
 			array_filter(
@@ -216,7 +217,7 @@ class Niztech_Youtube {
 	 *
 	 * @return mixed
 	 */
-	public static function query_video_data_from_youtube( $youtube_video_code ) {
+	public static function query_video_data_from_youtube( $youtube_video_code ): object {
 		return Niztech_Youtube::$google_service->videos->listVideos(
 			'snippet,localizations',
 			array( 'id' => $youtube_video_code )
@@ -232,7 +233,7 @@ class Niztech_Youtube {
 	 *
 	 * @throws Exception
 	 */
-	public static function commit_playlist_data_to_wp( $playlist_id, $post_id, array $data ) {
+	public static function commit_playlist_data_to_wp( $playlist_id, $post_id, array $data ): void {
 		global $wpdb;
 
 		if ( empty( $playlist_id ) || empty( $post_id ) ) {
@@ -277,7 +278,7 @@ class Niztech_Youtube {
 		$title = '',
 		$description = '',
 		$thumbnails = array()
-	) {
+	): void {
 		global $wpdb;
 
 		$today = new DateTime();
@@ -366,7 +367,7 @@ class Niztech_Youtube {
 	 *
 	 * @return mixed
 	 */
-	public static function get_local_playlist_row( $playlist_id ) {
+	public static function get_local_playlist_row( $playlist_id ): array|null|object {
 		global $wpdb;
 		$query = 'SELECT * ' .
 				'FROM ' . $wpdb->prefix . self::TBL_PLAYLIST . ' ' .
@@ -375,7 +376,7 @@ class Niztech_Youtube {
 		return $wpdb->get_row( $query, 'OBJECT' );
 	}
 
-	public static function create_empty_local_playlist_row( $post_id, $playlist_code ) {
+	public static function create_empty_local_playlist_row( $post_id, $playlist_code ): int {
 		global $wpdb;
 		$today = new DateTime();
 
@@ -391,7 +392,7 @@ class Niztech_Youtube {
 		return $wpdb->insert_id;
 	}
 
-	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ) {
+	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ): mixed {
 		if ( empty( $youtube_video_code ) ) {
 			return null;
 		}
@@ -422,7 +423,7 @@ class Niztech_Youtube {
 		return $wpdb->get_row( $query );
 	}
 
-	public static function process_Google_Service_YouTube_ThumbnailDetails( $thumbnail_details ) {
+	public static function process_Google_Service_YouTube_ThumbnailDetails( $thumbnail_details ): array {
 		$results         = array();
 		$thumbnail_types = array( 'default', 'medium', 'high', 'standard', 'maxres' );
 		foreach ( $thumbnail_types as $type ) {
@@ -436,7 +437,7 @@ class Niztech_Youtube {
 		return $results;
 	}
 
-	public static function setup_youtube_google_client() {
+	public static function setup_youtube_google_client(): void {
 		$api = self::get_youtube_api_key();
 		if ( empty( $api ) ) {
 			throw new Exception( __( 'Niztech Youtube could not configured.', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ) );
@@ -448,12 +449,12 @@ class Niztech_Youtube {
 		self::$google_service = new Google_Service_YouTube( $client );
 	}
 
-	public static function get_video_or_playlist_code_and_foreign_key( $type, $post_id ) {
+	public static function get_video_or_playlist_code_and_foreign_key( $type, $post_id ): ?object {
 		global $wpdb;
 		$query = '';
 
 		if ( empty( $type ) || empty( $post_id ) ) {
-			return '';
+			return null;
 		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 			$video_tbl_name = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
 			$query          = "SELECT id, post_id, youtube_playlist_code as youtube_code FROM $video_tbl_name WHERE post_id = $post_id";
@@ -466,7 +467,7 @@ class Niztech_Youtube {
 		return $wpdb->get_row( $query, 'OBJECT' );
 	}
 
-	public static function is_youtube_url( $youtube_url_string ) {
+	public static function is_youtube_url( $youtube_url_string ): bool {
 		$youtube_url_string = trim( $youtube_url_string );
 		$isYoutubeLink      = preg_match( '/^(http|https):\/\/www\.youtube\.com/', $youtube_url_string );
 		if ( $isYoutubeLink === 1 ) {
@@ -479,7 +480,7 @@ class Niztech_Youtube {
 	public static function extract_youtube_code(
 		$youtube_url_string = '',
 		$type = Niztech_Youtube::TYPE_OPTION_VIDEO
-	) {
+	): string {
 		$matches = array();
 		$pattern = '';
 		if ( $type === Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
@@ -502,7 +503,7 @@ class Niztech_Youtube {
 	 *
 	 * @return bool|string
 	 */
-	public static function video_source_get_meta( $value, $post_id = null ) {
+	public static function video_source_get_meta( $value, $post_id = null ): mixed {
 		if ( empty( $post_id ) ) {
 			global $post;
 			$post_id = $post->ID;
