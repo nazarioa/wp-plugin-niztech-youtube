@@ -61,9 +61,7 @@ class Niztech_Youtube_Admin {
 			);
 		}
 
-		$url = add_query_arg( $args, admin_url( 'options-general.php' ) );
-
-		return $url;
+		return add_query_arg( $args, admin_url( 'options-general.php' ) );
 	}
 
 	/**
