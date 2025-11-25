@@ -144,6 +144,7 @@ class Niztech_Youtube_Admin {
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
 
 			// TODO: Supply a message stating that all data was removed.
+			// or instead have an explicit delete button. Leave what is in the database behind
 			return;
 		}
 
