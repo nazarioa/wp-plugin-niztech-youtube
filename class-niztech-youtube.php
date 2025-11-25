@@ -261,22 +261,20 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * @param $post_id
-	 * @param $video_code
+	 * @param int    $post_id
+	 * @param string $video_code
 	 * @param int    $playlist_id
 	 * @param string $title
 	 * @param string $description
 	 * @param array  $thumbnails
-	 *
-	 * @throws Exception
 	 */
 	public static function commit_video_data_to_wp(
-		$post_id,
-		$video_code,
-		$playlist_id = 0,
-		$title = '',
-		$description = '',
-		$thumbnails = array()
+		int $post_id,
+		string $video_code,
+		int $playlist_id = 0,
+		string $title = '',
+		string $description = '',
+		array $thumbnails = array()
 	): void {
 		global $wpdb;
 
@@ -304,14 +302,14 @@ class Niztech_Youtube {
 	 * Queries the local database for playlist data. If the data is older than a few days
 	 * make the request back to google
 	 *
+	 * @param int    $post_id
 	 * @param string $youtube_playlist_code
-	 * @param $post_id
 	 * @param bool   $bypass_cached_data
 	 *
 	 * @return array of objects
 	 * @throws Exception
 	 */
-	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ): array {
+	public static function get_playlist_info_for( int $post_id, string $youtube_playlist_code = '', bool $bypass_cached_data = false ): array {
 		global $wpdb;
 		$foreign_playlist_id = null;
 
@@ -391,7 +389,7 @@ class Niztech_Youtube {
 		return $wpdb->insert_id;
 	}
 
-	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ): array|null|object {
+	public static function get_video_info_for( int $post_id, string $youtube_video_code = '', bool $bypass_cached_data = false ): array|null|object {
 		if ( empty( $youtube_video_code ) ) {
 			return null;
 		}
@@ -404,8 +402,8 @@ class Niztech_Youtube {
 				Niztech_Youtube::delete_video_by_post_playlist( $post_id, 0 );
 				Niztech_Youtube::commit_video_data_to_wp(
 					$post_id,
-					0,
 					$youtube_video_code,
+					0,
 					$raw_data->snippet->title,
 					$raw_data->snippet->description,
 					$raw_data->snippet->thumbnails

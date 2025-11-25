@@ -164,7 +164,7 @@ class Niztech_Youtube_Admin {
 		if ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
 			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
-			$saved_data = Niztech_Youtube::get_video_info_for( $youtube_code, $post_id, true );
+			$saved_data = Niztech_Youtube::get_video_info_for( $post_id, $youtube_code, true );
 			// Instead of above do:
 			// get video data from youtube (see get_video_info_for)
 			// if not null save to wp
@@ -175,7 +175,7 @@ class Niztech_Youtube_Admin {
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
-			$saved_data = Niztech_Youtube::get_playlist_info_for( $youtube_code, $post_id, true );
+			$saved_data = Niztech_Youtube::get_playlist_info_for( $post_id, $youtube_code, true );
 			// Instead of above do:
 			// get playlist data from youtube (see get_playlist_info_for)
 			// if not null save to wp,
