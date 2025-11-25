@@ -290,7 +290,7 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->assertNotNull( $inital_row );
 
 		// Now delete it
-		$this->class_instance->V2_delete_video_by_id( $inital_row->id );
+		$this->class_instance->delete_video_by_id( $inital_row->id );
 
 		// Assert that it has been removed
 		$removed_row = $wpdb->get_row( 'select id from ' . $table_name . ' where post_id = "' . $this->fakeVideos[0]['post_id'] . '";' );

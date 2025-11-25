@@ -342,7 +342,7 @@ class Niztech_Youtube {
 			$raw_data = Niztech_Youtube::query_playlist_data_from_youtube( $youtube_playlist_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data->items ) ) {
-				Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, $foreign_playlist_id );
+				Niztech_Youtube::delete_video_by_post_playlist( $post_id, $foreign_playlist_id );
 				Niztech_Youtube::commit_playlist_data_to_wp( $foreign_playlist_id, $post_id, $raw_data->items );
 			}
 		}
@@ -401,7 +401,7 @@ class Niztech_Youtube {
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data ) ) {
 				// Remove existing data
-				Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, 0 );
+				Niztech_Youtube::delete_video_by_post_playlist( $post_id, 0 );
 				Niztech_Youtube::commit_video_data_to_wp(
 					$post_id,
 					0,
@@ -516,12 +516,12 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function v2_delete_video_by_id( $id ) {
+	public static function delete_video_by_id( $id ): void {
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . self::TBL_VIDEOS, array( 'id' => $id ) );
 	}
 
-	public static function v2_delete_video_by_post_playlist( $post_id, $playlist_id ) {
+	public static function delete_video_by_post_playlist( $post_id, $playlist_id ): void {
 		global $wpdb;
 		if ( ! empty( $post_id ) && ! empty( $playlist_id ) ) {
 			$wpdb->delete(
@@ -548,12 +548,12 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function v2_delete_playlist_by_id( $id ) {
+	public static function delete_playlist_by_id( $id ): void {
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
 	}
 
-	public static function v2_delete_playlist_by_post_id( $post_id ) {
+	public static function delete_playlist_by_post_id( $post_id ): void {
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
 	}

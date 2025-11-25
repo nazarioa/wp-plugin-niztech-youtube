@@ -139,8 +139,8 @@ class Niztech_Youtube_Admin {
 
 		if ( empty( $youtube_url ) ) {
 			// Delete post data because $youtube_code is empty.
-			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
-			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
+			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
+			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
 
 			// TODO: Supply a message stating that all data was removed.
 			return;
@@ -162,8 +162,8 @@ class Niztech_Youtube_Admin {
 		$saved_data = null;
 
 		if ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
-			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
-			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
+			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
+			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
 			$saved_data = Niztech_Youtube::get_video_info_for( $youtube_code, $post_id, true );
 			// Instead of above do:
 			// get video data from youtube (see get_video_info_for)
@@ -173,8 +173,8 @@ class Niztech_Youtube_Admin {
 			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
-			Niztech_Youtube::v2_delete_playlist_by_post_id( $post_id );
-			Niztech_Youtube::v2_delete_video_by_post_playlist( $post_id, null );
+			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
+			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
 			$saved_data = Niztech_Youtube::get_playlist_info_for( $youtube_code, $post_id, true );
 			// Instead of above do:
 			// get playlist data from youtube (see get_playlist_info_for)
