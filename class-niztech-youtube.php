@@ -16,11 +16,11 @@ class Niztech_Youtube {
 	const TYPE_OPTION_PLAYLIST = 'Playlist';
 	const TYPE_OPTION_VIDEO    = 'Single Video';
 
-	public static $google_service = null;
+	public static object|null $google_service = null;
 
-	private static $initiated              = false;
-	private static $notices                = array();
-	private static $video_stale_limit_days = 3;
+	private static bool $initiated             = false;
+	private static array $notices              = array();
+	private static int $video_stale_limit_days = 3;
 
 	private static $youtube_v3_api_key = '';
 
@@ -52,7 +52,6 @@ class Niztech_Youtube {
 		self::v1_initial();
 		self::v2_hide_video_override();
 	}
-
 
 	public static function plugin_deactivation(): void {
 	}
@@ -196,7 +195,7 @@ class Niztech_Youtube {
 	/**
 	 * @param $youtube_playlist_code
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public static function query_playlist_data_from_youtube( $youtube_playlist_code ): array {
 		$response = self::$google_service->playlistItems->listPlaylistItems(
@@ -312,7 +311,7 @@ class Niztech_Youtube {
 	 * @return array of objects
 	 * @throws Exception
 	 */
-	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ) {
+	public static function get_playlist_info_for( $youtube_playlist_code = '', $post_id, $bypass_cached_data = false ): array {
 		global $wpdb;
 		$foreign_playlist_id = null;
 
@@ -365,7 +364,7 @@ class Niztech_Youtube {
 	/**
 	 * @param $playlist_id
 	 *
-	 * @return mixed
+	 * @return array|object|null
 	 */
 	public static function get_local_playlist_row( $playlist_id ): array|null|object {
 		global $wpdb;
@@ -392,7 +391,7 @@ class Niztech_Youtube {
 		return $wpdb->insert_id;
 	}
 
-	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ): mixed {
+	public static function get_video_info_for( $youtube_video_code = '', $post_id, $bypass_cached_data = false ): array|null|object {
 		if ( empty( $youtube_video_code ) ) {
 			return null;
 		}
@@ -503,7 +502,7 @@ class Niztech_Youtube {
 	 *
 	 * @return bool|string
 	 */
-	public static function video_source_get_meta( $value, $post_id = null ): mixed {
+	public static function video_source_get_meta( $value, $post_id = null ): bool|string {
 		if ( empty( $post_id ) ) {
 			global $post;
 			$post_id = $post->ID;
