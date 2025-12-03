@@ -19,6 +19,7 @@ class Niztech_Youtube_Admin {
 		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_resources' ) );
 
 		add_action( 'save_post', array( 'Niztech_Youtube_Admin', 'video_source_save' ) );
+		add_action( 'admin_notices', array( 'Niztech_Youtube_Admin', 'admin_notices' ) );
 
 		add_action( 'load-post.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
 		add_action( 'load-post-new.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
@@ -133,6 +134,8 @@ class Niztech_Youtube_Admin {
 
 		// Validate that the user has permission to make changes.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied', true, 30 );
+
 			return;
 		}
 
@@ -143,11 +146,15 @@ class Niztech_Youtube_Admin {
 
 			// TODO: Supply a message stating that all data was removed.
 			// or instead have an explicit delete button. Leave what is in the database behind
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_deleted', true, 30 );
+
 			return;
 		}
 
 		if ( ! Niztech_Youtube::is_youtube_url( $youtube_url ) ) {
 			// TODO: Should show error saying it is not a valid URL.
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url', true, 30 );
+
 			return;
 		}
 
@@ -156,6 +163,8 @@ class Niztech_Youtube_Admin {
 			$youtube_code = Niztech_Youtube::extract_youtube_code( $youtube_url, $youtube_type );
 		} catch ( \Exception $e ) {
 			// TODO: Should show error if no valid code found for type
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
+
 			return;
 		}
 
@@ -164,24 +173,38 @@ class Niztech_Youtube_Admin {
 		if ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
 			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
-			$saved_data = Niztech_Youtube::get_video_info_for( $post_id, $youtube_code, true );
-			// Instead of above do:
-			// get video data from youtube (see get_video_info_for)
-			// if not null save to wp
-			// update post metadata
-			// if null report error
-			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
+			try {
+				$saved_data = Niztech_Youtube::get_video_info_for( $post_id, $youtube_code, true );
+				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved', true, 30 );
+			} catch ( \Exception $e ) {
+				// Instead of above do:
+				// get video data from youtube (see get_video_info_for)
+				// if not null save to wp
+				// update post metadata
+				// if null report error
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
+				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_error', true, 30 );
 
+				return;
+			}
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
-			$saved_data = Niztech_Youtube::get_playlist_info_for( $post_id, $youtube_code, true );
-			// Instead of above do:
-			// get playlist data from youtube (see get_playlist_info_for)
-			// if not null save to wp,
-			// update post metadata
-			// if null report error
-			update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
+			try {
+				$saved_data = Niztech_Youtube::get_playlist_info_for( $post_id, $youtube_code, true );
+				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_saved', true, 30 );
+			} catch ( \Exception $e ) {
+
+				// Instead of above do:
+				// get playlist data from youtube (see get_playlist_info_for)
+				// if not null save to wp,
+				// update post metadata
+				// if null report error
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
+				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_error', true, 30 );
+
+				return;
+			}
 		}
 
 		update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail', $youtube_use_as_featured );
@@ -277,5 +300,43 @@ class Niztech_Youtube_Admin {
 		}
 
 		return set_post_thumbnail( $post_id, $id );
+	}
+
+	public static function admin_notices() {
+		$notice = '';
+		$level  = '';
+		if ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied' ) ) {
+			$level  = 'notice-error';
+			$notice = __( 'You do not have permission to save this change.' );
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_deleted' ) ) {
+			$level  = 'notice-warning';
+			$notice = __( 'Video source removed from WP site' );
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_deleted' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url' ) ) {
+			$level  = 'notice-error';
+			$notice = __( 'The video URL used does not appear to be a Youtube video or playlist URL' );
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted' ) ) {
+			$level  = 'notice-error';
+			$notice = __( 'The video URL appears to be a Youtube URL but a valid playlist or video code could not be extracted.' );
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved' ) ) {
+			$notice = __( 'Your Youtube video was added to your website' );
+			$level  = 'notice-success';
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_saved' ) ) {
+			$notice = __( 'Your Youtube playlist was added to your website' );
+			$level  = 'notice-success';
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_saved' );
+		}
+
+		if ( $notice ) {
+			?>
+			<div class="notice <?php echo $level; ?> is-dismissible">
+				<p><strong>Niztech Youtube Plugin:</strong> <?php echo $notice; ?></p>
+			</div>
+			<?php
+		}
 	}
 }
