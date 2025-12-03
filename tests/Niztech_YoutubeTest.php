@@ -277,10 +277,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->class_instance->commit_video_data_to_wp(
 			$this->fakeVideos[0]['post_id'],
 			$this->fakeVideos[0]['code'],
+			$this->fakeVideos[0]['data']['snippet']['thumbnails'],
 			$this->fakeVideos[0]['playlist_id'],
 			$this->fakeVideos[0]['data']['snippet']['title'],
 			$this->fakeVideos[0]['data']['snippet']['description'],
-			$this->fakeVideos[0]['data']['snippet']['thumbnails']
 		);
 
 		global $wpdb;
@@ -315,10 +315,10 @@ class Niztech_YoutubeTest extends WP_UnitTestCase {
 		$this->class_instance->commit_video_data_to_wp(
 			$this->fakeVideos[0]['post_id'],
 			$this->fakeVideos[0]['code'],
+			$this->fakeVideos[0]['data']['snippet']['thumbnails'],
 			$this->fakeVideos[0]['playlist_id'],
 			$this->fakeVideos[0]['data']['snippet']['title'],
 			$this->fakeVideos[0]['data']['snippet']['description'],
-			$this->fakeVideos[0]['data']['snippet']['thumbnails']
 		);
 
 		global $wpdb;

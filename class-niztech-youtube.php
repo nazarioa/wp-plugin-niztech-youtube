@@ -195,9 +195,9 @@ class Niztech_Youtube {
 	/**
 	 * @param $youtube_playlist_code
 	 *
-	 * @return array
+	 * @return object
 	 */
-	public static function query_playlist_data_from_youtube( $youtube_playlist_code ): array {
+	public static function query_playlist_data_from_youtube( $youtube_playlist_code ): object {
 		$response = self::$google_service->playlistItems->listPlaylistItems(
 			'snippet,contentDetails',
 			array_filter(
@@ -244,10 +244,10 @@ class Niztech_Youtube {
 			Niztech_Youtube::commit_video_data_to_wp(
 				$post_id,
 				$datum->snippet->resourceId->videoId,
+				$datum->snippet->thumbnails,
 				$playlist_id,
 				$datum->snippet->title,
 				$datum->snippet->description,
-				$datum->snippet->thumbnails
 			);
 		}
 
@@ -266,15 +266,15 @@ class Niztech_Youtube {
 	 * @param int    $playlist_id
 	 * @param string $title
 	 * @param string $description
-	 * @param array  $thumbnails
+	 * @param object $thumbnails
 	 */
 	public static function commit_video_data_to_wp(
 		int $post_id,
 		string $video_code,
+		object $thumbnails,
 		int $playlist_id = 0,
 		string $title = '',
 		string $description = '',
-		array $thumbnails = array()
 	): void {
 		global $wpdb;
 
@@ -306,10 +306,10 @@ class Niztech_Youtube {
 	 * @param string $youtube_playlist_code
 	 * @param bool   $bypass_cached_data
 	 *
-	 * @return array of objects
+	 * @return object
 	 * @throws Exception
 	 */
-	public static function get_playlist_info_for( int $post_id, string $youtube_playlist_code = '', bool $bypass_cached_data = false ): array {
+	public static function get_playlist_info_for( int $post_id, string $youtube_playlist_code = '', bool $bypass_cached_data = false ): object {
 		global $wpdb;
 		$foreign_playlist_id = null;
 
@@ -403,10 +403,10 @@ class Niztech_Youtube {
 				Niztech_Youtube::commit_video_data_to_wp(
 					$post_id,
 					$youtube_video_code,
+					$raw_data->snippet->thumbnails,
 					0,
 					$raw_data->snippet->title,
 					$raw_data->snippet->description,
-					$raw_data->snippet->thumbnails
 				);
 			}
 		}
