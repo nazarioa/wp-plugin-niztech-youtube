@@ -243,13 +243,13 @@ class Niztech_Youtube_Admin {
 		</p>
 		<p>
 			<label for="niztech_video_use_youtube_featured">
-			<?php
-			_e(
-				'Use Youtube Featured Image',
-				'video_source'
-			);
-			?>
-					</label><br>
+				<?php
+				_e(
+					'Use Youtube Featured Image',
+					'video_source'
+				);
+				?>
+			</label><br>
 			<input id="niztech_video_use_youtube_featured"
 					name="niztech_video_use_youtube_featured"
 				<?php echo $use_yt_as_thumbnail ? ' checked ' : ''; ?>
