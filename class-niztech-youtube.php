@@ -443,7 +443,7 @@ class Niztech_Youtube {
 		$client = new Google_Client();
 		$client->setApplicationName( 'Niztech Youtube' );
 		$client->setDeveloperKey( $api );
-		self::$google_service = new Google_Service_YouTube( $client );
+		self::$google_service = new Google\Service\YouTube( $client );
 	}
 
 	public static function get_video_or_playlist_code_and_foreign_key( $type, $post_id ): ?object {
