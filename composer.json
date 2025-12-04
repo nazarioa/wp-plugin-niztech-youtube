@@ -1,27 +1,39 @@
 {
-  "name": "nazarioa/niztech-youtube",
-  "type": "wordpress-plugin",
-  "description": "Plugin that interfaces with Google's API",
-  "keywords": [
-    "nazarioa",
-    "plugin",
-    "wordpress",
-    "wordpress-plugin",
-    "youtube"
-  ],
-  "homepage": "https://github.com/nazarioa/wp-plugin-niztech-youtube",
-  "require": {
-    "composer/installers": "~1.0",
-    "google/apiclient": "^2.2",
-    "php": ">=7.0"
-  },
-  "authors": [
-    {
-      "name": "Nazario A. Ayala",
-      "email": "nazario@niztech.com"
-    }
-  ],
-  "require-dev": {
-    "phpunit/phpunit": "^6.0"
-  }
+	"name": "nazarioa/niztech-youtube",
+	"type": "wordpress-plugin",
+	"description": "Plugin that interfaces with Google's API",
+	"license": "proprietary",
+	"keywords": [
+		"nazarioa",
+		"plugin",
+		"wordpress",
+		"wordpress-plugin",
+		"youtube"
+	],
+	"homepage": "https://github.com/nazarioa/wp-plugin-niztech-youtube",
+	"require": {
+		"composer/installers": "~1.0",
+		"google/apiclient": "^2.2",
+		"php": ">=8.2"
+	},
+	"require-dev": {
+		"codeception/codeception": "^5.3",
+		"wp-coding-standards/wpcs": "^3.0"
+	},
+	"authors": [
+		{
+			"name": "Nazario A. Ayala",
+			"email": "nazario@niztech.com"
+		}
+	],
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"lint":  "vendor/bin/phpcs  -ns .",
+		"lint-fix":  "vendor/bin/phpcbf"
+	}
 }
