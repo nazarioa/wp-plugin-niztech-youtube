@@ -23,6 +23,9 @@ class Niztech_Youtube_Admin {
 
 		add_action( 'load-post.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
 		add_action( 'load-post-new.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
+
+		add_action( 'wp_ajax_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden' ) );
+		add_action( 'wp_ajax_nopriv_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden_NOOP' ) );
 	}
 
 	public static function load_resources(): void {
@@ -46,6 +49,22 @@ class Niztech_Youtube_Admin {
 				NT_YOUTUBE_PLUGIN_VERSION
 			);
 			wp_enqueue_style( 'niztech_youtube.css' );
+
+			wp_enqueue_script(
+				'niztech_youtube_admin.js',
+				plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube_admin.js',
+				null,
+				null,
+				true
+			);
+			wp_localize_script(
+				'niztech_youtube_admin.js',
+				'myAjax',
+				array(
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'niztech-youtube-ajax-nonce' ),
+				)
+			);
 		}
 	}
 
@@ -256,10 +275,44 @@ class Niztech_Youtube_Admin {
 					type="checkbox">
 		</p>
 		<p>
-			<?php Niztech_Youtube_Client::video_content_html( $post->ID ); ?>
+			<?php Niztech_Youtube_Admin::video_content_admin_html( $post->ID ); ?>
 		</p>
 
 		<?php
+	}
+
+	public static function video_mark_hidden(): void {
+		// Verify nonce for security
+		if ( ! check_ajax_referer( 'niztech-youtube-ajax-nonce', 'nonce', false ) ) {
+			wp_send_json_error( 'Invalid nonce' );
+			wp_die();
+		}
+
+		$is_hidden = filter_var( $_POST['is_hidden'], FILTER_VALIDATE_BOOLEAN );
+		$video_id  = filter_var( $_POST['video_id'], FILTER_VALIDATE_INT );
+		$post_id   = filter_var( $_POST['post_id'], FILTER_VALIDATE_INT );
+
+		// Validate that the user has permission to make changes.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( "You don't have edit privs" );
+			wp_die();
+		}
+
+		// Perform operations (e.g., database interactions)
+		try {
+			Niztech_Youtube::hide_video_by_id( $post_id, $video_id, $is_hidden );
+			wp_send_json_success();
+		} catch ( Exception $e ) {
+			wp_send_json_error( $e->getMessage() );
+		}
+
+		// Send a JSON response back to JavaScript
+		wp_die();
+	}
+
+	public static function video_mark_hidden_NOOP(): void {
+		wp_send_json_error( 'you must be authenticated' );
+		wp_die();
 	}
 
 	/**
@@ -338,5 +391,84 @@ class Niztech_Youtube_Admin {
 			</div>
 			<?php
 		}
+	}
+
+	/**
+	 * @param string $class
+	 * @param string $id
+	 * @param string $post_id
+	 *
+	 *
+	 * Returns an array of video content intended for an admin managing the site.
+	 */
+	public static function video_content_admin( $post_id ) {
+		global $wpdb;
+		if ( empty( $post_id ) ) {
+			global $post;
+			$post_id = $post->ID;
+		}
+
+		$type               = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post_id );
+		$foreign_key_object = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post_id );
+
+		if ( empty( $foreign_key_object ) || empty( $type ) ) {
+			return null;
+		}
+
+		if ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+
+			return $wpdb->get_results(
+				'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
+				" WHERE playlist_id = $foreign_key_object->id;"
+			);
+		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
+			return $wpdb->get_results(
+				'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
+				" WHERE post_id = $foreign_key_object->post_id AND playlist_id = 0;"
+			);
+		}
+	}
+
+	/**
+	 * @param string $class
+	 * @param string $id
+	 * @param string $post_id
+	 *
+	 *
+	 * Returns an HTML ordered list of video content intended for an admin managing the site.
+	 */
+	public static function video_content_admin_html( $post_id, $class = '', $id = '' ) {
+		$videos    = Niztech_Youtube_Admin::video_content_admin( $post_id );
+		$output    = '';
+		$hideLabel = __(
+			'Hide this video',
+			Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+		);
+		if ( ! empty( $videos ) ) {
+			$videos_html = '';
+			foreach ( $videos as $video ) {
+				$video_url      = $video->thumbnail_high_url;
+				$video_input_id = sprintf( 'post-%s-video-%s', $post_id, $video->id );
+
+				$is_checked   = ( empty( $video_url ) || $video->hidden == 1 ) ? 'checked' : '';
+				$videos_html .= sprintf(
+					'<li class="niztech-youtube-thumbnail"><a href="//www.youtube.com/watch?v=%s" class="niztech-youtube-thumbnail-picture" style="background-image: url(\'%s\')"><span class="niztech-youtube-hidden">%s</span></a><div><input id="%s" name="%s" value="%s" type="checkbox" %s /><label for="%s">%s</label></div></li>',
+					$video->youtube_video_code,
+					$video_url,
+					$video->title,
+					$video_input_id,
+					$post_id,
+					$video->id,
+					$is_checked,
+					$video_input_id,
+					$hideLabel
+				);
+			}
+			$id_attrib    = ( empty( $id ) ? '' : sprintf( 'id="%s"', $id ) );
+			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf( 'class="niztech-youtube-thumbnails %s"', $class );
+			$output       = sprintf( '<ol %s">%s</ol>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
+		}
+
+		echo $output;
 	}
 }

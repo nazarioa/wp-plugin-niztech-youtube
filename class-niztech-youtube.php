@@ -555,4 +555,16 @@ class Niztech_Youtube {
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
 	}
+
+	public static function hide_video_by_id( int $post_id, int $video_id, bool $hidden ): void {
+		global $wpdb;
+		$wpdb->update(
+			$wpdb->prefix . self::TBL_VIDEOS,
+			array( 'hidden' => $hidden ),
+			array(
+				'post_id' => $post_id,
+				'id'      => $video_id,
+			)
+		);
+	}
 }
