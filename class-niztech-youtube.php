@@ -171,6 +171,7 @@ class Niztech_Youtube {
 	 * adds a column
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public static function v2_hide_video_override(): void {
 		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
@@ -181,15 +182,17 @@ class Niztech_Youtube {
 		global $wpdb;
 
 		$table_video_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
-		$sql              = "ALTER TABLE $table_video_name ADD COLUMN IF NOT EXISTS hidden TINYINT NULL DEFAULT 0;";
 
-		$query_result = $wpdb->query( $sql );
-		if ( $query_result === false ) {
-			// error occurred
-			die();
-		} else {
-			update_option( self::PLUGIN_PREFIX . 'db_version', 2 );
+		$sql_verify        = "SELECT COUNT(*) AS cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '$table_video_name' AND COLUMN_NAME = 'hidden';";
+		$sql_verify_result = $wpdb->get_results( $sql_verify );
+		if ( count( $sql_verify_result ) < 1 && $sql_verify_result[0]->cnt < 1 ) {
+			$sql          = "ALTER TABLE $table_video_name ADD COLUMN hidden TINYINT NULL DEFAULT 0;";
+			$query_result = $wpdb->query( $sql );
+			if ( $query_result === false ) {
+				throw new Exception( 'Could not update database.' );
+			}
 		}
+		update_option( self::PLUGIN_PREFIX . 'db_version', 2 );
 	}
 
 	/**
