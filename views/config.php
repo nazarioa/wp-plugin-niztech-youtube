@@ -26,7 +26,14 @@
 		<form action="<?php echo esc_url( Niztech_Youtube_Admin::get_page_url() ); ?>" method="POST">
 			<h2><?php esc_attr_e( 'Google API', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></h2>
 			<div class="niztech-youtube-row">
-				<label class="niztech-youtube-label" for="niztech-youtube-api"><?php esc_attr_e( 'YouTube V3 API Key', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label>
+				<label class="niztech-youtube-label" for="niztech-youtube-api">
+				<?php
+				esc_attr_e(
+					'YouTube V3 API Key',
+					Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+				);
+				?>
+						</label>
 				<input class="niztech-youtube-input" id="niztech-youtube-api" name="niztech-youtube-api"
 						value="<?php echo esc_attr( Niztech_Youtube::get_youtube_api_key() ); ?>"/>
 				<input type="hidden" name="action" value="enter-key">
@@ -46,11 +53,12 @@
 
 				<div>
 
-				<select>
-					<option>Hide (default)</option>
-					<option>Show</option>
-				</select>
-					<p>When videos are removed from YouTube, how should the content be rendered by default? <br />This behavior can be over-ridden per playlist</p>
+					<select>
+						<option>Hide (default)</option>
+						<option>Show</option>
+					</select>
+					<p>When videos are removed from YouTube, how should the content be rendered by default? <br/>This
+						behavior can be over-ridden per playlist</p>
 				</div>
 
 				<input type="hidden" name="action" value="enter-key">
@@ -68,8 +76,23 @@
 
 	<section class="niztech-youtube-section">
 		<div class="niztech-youtube-row">
-			<div class="niztech-youtube-label"><?php esc_attr_e( 'Database Version', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></div>
-			<div class="niztech-youtube-input"><?php echo( intval( get_option( Niztech_Youtube::PLUGIN_PREFIX . 'db_version' ), 10 ) ); ?></div>
+			<div class="niztech-youtube-label">
+			<?php
+			esc_attr_e(
+				'Database Version',
+				Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+			);
+			?>
+					</div>
+			<div
+				class="niztech-youtube-input">
+				<?php
+				echo( intval(
+					get_option( Niztech_Youtube::PLUGIN_PREFIX . 'db_version' ),
+					10
+				) );
+				?>
+					</div>
 		</div>
 	</section>
 

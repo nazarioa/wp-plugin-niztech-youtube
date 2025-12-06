@@ -129,7 +129,7 @@ class Niztech_Youtube {
 			post_id bigint(20) NOT NULL,
 			youtube_playlist_code varchar(255) NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			PRIMARY KEY  (id)
+			PRIMARY KEY (id)
 		) $charset_collate;";
 
 		// create table videos
@@ -312,7 +312,11 @@ class Niztech_Youtube {
 	 * @return object
 	 * @throws Exception
 	 */
-	public static function get_playlist_info_for( int $post_id, string $youtube_playlist_code = '', bool $bypass_cached_data = false ): object {
+	public static function get_playlist_info_for(
+		int $post_id,
+		string $youtube_playlist_code = '',
+		bool $bypass_cached_data = false
+	): object {
 		global $wpdb;
 		$foreign_playlist_id = null;
 
@@ -353,8 +357,8 @@ class Niztech_Youtube {
 		if ( ! empty( $existing_playlist->id ) ) {
 			$playlist_data = $wpdb->get_row(
 				'SELECT * ' .
-											'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
-											'WHERE playlist_id = "' . $existing_playlist->id . '";'
+				'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
+				'WHERE playlist_id = "' . $existing_playlist->id . '";'
 			);
 		}
 
@@ -392,7 +396,11 @@ class Niztech_Youtube {
 		return $wpdb->insert_id;
 	}
 
-	public static function get_video_info_for( int $post_id, string $youtube_video_code = '', bool $bypass_cached_data = false ): array|null|object {
+	public static function get_video_info_for(
+		int $post_id,
+		string $youtube_video_code = '',
+		bool $bypass_cached_data = false
+	): array|null|object {
 		if ( empty( $youtube_video_code ) ) {
 			return null;
 		}

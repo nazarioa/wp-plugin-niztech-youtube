@@ -25,7 +25,10 @@ class Niztech_Youtube_Admin {
 		add_action( 'load-post-new.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
 
 		add_action( 'wp_ajax_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden' ) );
-		add_action( 'wp_ajax_nopriv_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden_NOOP' ) );
+		add_action(
+			'wp_ajax_nopriv_niztech_youtube_admin_hide_video',
+			array( 'Niztech_Youtube_Admin', 'video_mark_hidden_NOOP' )
+		);
 	}
 
 	public static function load_resources(): void {
@@ -408,7 +411,10 @@ class Niztech_Youtube_Admin {
 			$post_id = $post->ID;
 		}
 
-		$type               = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post_id );
+		$type               = Niztech_Youtube::video_source_get_meta(
+			Niztech_Youtube::PLUGIN_PREFIX . 'type',
+			$post_id
+		);
 		$foreign_key_object = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post_id );
 
 		if ( empty( $foreign_key_object ) || empty( $type ) ) {
@@ -465,8 +471,15 @@ class Niztech_Youtube_Admin {
 				);
 			}
 			$id_attrib    = ( empty( $id ) ? '' : sprintf( 'id="%s"', $id ) );
-			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf( 'class="niztech-youtube-thumbnails %s"', $class );
-			$output       = sprintf( '<ol %s">%s</ol>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
+			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf(
+				'class="niztech-youtube-thumbnails %s"',
+				$class
+			);
+			$output       = sprintf(
+				'<ol %s">%s</ol>',
+				implode( ' ', array( $id_attrib, $class_attrib ) ),
+				$videos_html
+			);
 		}
 
 		echo $output;
