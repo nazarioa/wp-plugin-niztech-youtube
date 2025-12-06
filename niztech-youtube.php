@@ -18,8 +18,6 @@
 
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
-} elseif ( file_exists( $file = __DIR__ . '/vendor_committed/autoload.php' ) ) {
-	require_once __DIR__ . '/vendor_committed/autoload.php';
 } else {
 	throw new \Exception( 'please run "composer install in "' . __DIR__ . '"' );
 }
