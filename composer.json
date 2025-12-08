@@ -14,7 +14,9 @@
 	"require": {
 		"composer/installers": "~1.0",
 		"google/apiclient": "^2.2",
-		"php": ">=8.2"
+		"monolog/monolog": "^1.27",
+		"php": ">=8.2",
+		"psr/log": "^1.1"
 	},
 	"require-dev": {
 		"codeception/codeception": "^5.3",
