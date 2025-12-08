@@ -115,7 +115,7 @@ class Niztech_Youtube {
 	 */
 	public static function v1_initial(): void {
 		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
-		if ( $active_database_version > 1 ) {
+		if ( $active_database_version >= 1 ) {
 			return;
 		}
 
@@ -175,7 +175,7 @@ class Niztech_Youtube {
 	 */
 	public static function v2_hide_video_override(): void {
 		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
-		if ( $active_database_version > 2 ) {
+		if ( $active_database_version >= 2 ) {
 			return;
 		}
 
