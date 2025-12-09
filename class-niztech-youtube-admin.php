@@ -189,6 +189,11 @@ class Niztech_Youtube_Admin {
 			return;
 		}
 
+		if ( empty( $youtube_code ) ) {
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
+			return;
+		}
+
 		$saved_data = null;
 
 		if ( $youtube_type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
