@@ -552,15 +552,15 @@ class Niztech_Youtube {
 	 *
 	 * @return bool|string
 	 */
-	public static function video_source_get_meta( $value, $post_id = null ): bool|string {
+	public static function video_source_get_meta( $key, $post_id = null ): bool|string {
 		if ( empty( $post_id ) ) {
 			global $post;
 			$post_id = $post->ID;
 		}
 
-		$field = get_post_meta( $post_id, $value, true );
-		if ( ! empty( $field ) ) {
-			return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+		$value = get_post_meta( $post_id, $key, true );
+		if ( ! empty( $value ) ) {
+			return is_array( $value ) ? stripslashes_deep( $value ) : stripslashes( wp_kses_decode_entities( $value ) );
 		} else {
 			return false;
 		}
