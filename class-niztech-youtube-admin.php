@@ -136,11 +136,11 @@ class Niztech_Youtube_Admin {
 	 * @throws Exception
 	 */
 	public static function video_source_save( $post_id ): void {
-		$youtube_url             = esc_attr( $_POST['niztech_video_youtube_url'] ?? '' );
-		$youtube_type            = esc_attr( $_POST['niztech_video_youtube_type'] ?? '' );
-		$youtube_use_as_featured = esc_attr( $_POST['niztech_video_use_youtube_featured'] ?? false );
-		$youtube_nonce           = esc_attr( $_POST['niztech_video_source_nonce'] ?? '' );
-		$youtube_foreign_key     = esc_attr( $_POST['niztech_video_foreign_key'] ?? '' );
+		$youtube_url             = esc_attr( $_POST['niztech_youtube_url'] ?? '' );
+		$youtube_type            = esc_attr( $_POST['niztech_youtube_type'] ?? '' );
+		$youtube_use_as_featured = esc_attr( $_POST['niztech_youtube_use_youtube_featured'] ?? false );
+		$youtube_nonce           = esc_attr( $_POST['niztech_youtube_source_nonce'] ?? '' );
+		$youtube_foreign_key     = esc_attr( $_POST['niztech_youtube_foreign_key'] ?? '' );
 
 		// Only save changes if the user clicked save.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -148,7 +148,7 @@ class Niztech_Youtube_Admin {
 		}
 
 		// Validate that the request came from the user via admin screen.
-		if ( ! isset( $_POST['niztech_video_source_nonce'] ) || ! wp_verify_nonce(
+		if ( ! isset( $_POST['niztech_youtube_source_nonce'] ) || ! wp_verify_nonce(
 			$youtube_nonce,
 			Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA
 		) ) {
@@ -238,7 +238,7 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ): void {
-		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
+		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, Niztech_Youtube::PLUGIN_PREFIX . 'source_nonce' );
 		$type                = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
 		$use_yt_as_thumbnail = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail' );
 		$youtube_data        = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post->ID );
@@ -246,15 +246,15 @@ class Niztech_Youtube_Admin {
 		?>
 
 		<p>
-			<label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
-			<input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url" style="width: 80%;"
-					value="<?php echo $youtube_url ?? ''; ?>">
-			<input type="hidden" name="niztech_video_foreign_key" id="niztech_video_foreign_key"
+			<label for="niztech_youtube_url"><?php _e( 'Youtube URL', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
+			<input type="text" name="niztech_youtube_url" id="niztech_youtube_url" style="width: 80%;"
+					value="<?php echo $youtube_url; ?>">
+			<input type="hidden" name="niztech_youtube_foreign_key" id="niztech_youtube_foreign_key"
 					value="<?php echo $youtube_data->id ?? ''; ?>">
 		</p>
 		<p>
-			<label for="niztech_video_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
-			<select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
+			<label for="niztech_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
+			<select name="niztech_youtube_type" id="niztech_youtube_type">
 				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
 					Playlist
 				</option>
@@ -264,7 +264,7 @@ class Niztech_Youtube_Admin {
 			</select>
 		</p>
 		<p>
-			<label for="niztech_video_use_youtube_featured">
+			<label for="niztech_youtube_use_youtube_featured">
 				<?php
 				_e(
 					'Use Youtube Featured Image',
@@ -272,8 +272,8 @@ class Niztech_Youtube_Admin {
 				);
 				?>
 			</label><br>
-			<input id="niztech_video_use_youtube_featured"
-					name="niztech_video_use_youtube_featured"
+			<input id="niztech_youtube_use_youtube_featured"
+					name="niztech_youtube_use_youtube_featured"
 				<?php echo $use_yt_as_thumbnail ? ' checked ' : ''; ?>
 					type="checkbox">
 		</p>
