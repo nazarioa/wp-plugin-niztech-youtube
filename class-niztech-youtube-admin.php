@@ -202,15 +202,14 @@ class Niztech_Youtube_Admin {
 			try {
 				$saved_data = Niztech_Youtube::get_video_info_for( $post_id, $youtube_code, true );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved', true, 30 );
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 			} catch ( \Exception $e ) {
 				// Instead of above do:
 				// get video data from youtube (see get_video_info_for)
 				// if not null save to wp
 				// update post metadata
 				// if null report error
-				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_error', true, 30 );
-
 				return;
 			}
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
@@ -219,6 +218,7 @@ class Niztech_Youtube_Admin {
 			try {
 				$saved_data = Niztech_Youtube::get_playlist_info_for( $post_id, $youtube_code, true );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_saved', true, 30 );
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 			} catch ( \Exception $e ) {
 
 				// Instead of above do:
@@ -226,9 +226,7 @@ class Niztech_Youtube_Admin {
 				// if not null save to wp,
 				// update post metadata
 				// if null report error
-				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_error', true, 30 );
-
 				return;
 			}
 		}
