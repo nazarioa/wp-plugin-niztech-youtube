@@ -31,7 +31,7 @@ class Niztech_Youtube {
 	private static array $notices              = array();
 	private static int $video_stale_limit_days = 3;
 
-	private static $youtube_v3_api_key = '';
+	private static string $youtube_v3_api_key = '';
 
 	public static function init() {
 		if ( ! self::$initiated ) {
@@ -98,7 +98,7 @@ class Niztech_Youtube {
 			return self::$youtube_v3_api_key;
 		}
 
-		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key . '' );
+		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key );
 	}
 
 	public static function set_youtube_api_key( $api_key ): void {
@@ -149,7 +149,7 @@ class Niztech_Youtube {
 	 * @return void
 	 */
 	public static function v1_initial(): void {
-		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ) );
 		if ( $active_database_version >= 1 ) {
 			return;
 		}
@@ -209,7 +209,7 @@ class Niztech_Youtube {
 	 * @throws Exception
 	 */
 	public static function v2_hide_video_override(): void {
-		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ) );
 		if ( $active_database_version >= 2 ) {
 			return;
 		}
@@ -353,7 +353,6 @@ class Niztech_Youtube {
 		bool $bypass_cached_data = false
 	): object {
 		global $wpdb;
-		$foreign_playlist_id = null;
 
 		// Query cached data
 		$foreign_data = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key(

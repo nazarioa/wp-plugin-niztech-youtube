@@ -358,7 +358,7 @@ class Niztech_Youtube_Admin {
 		return set_post_thumbnail( $post_id, $id );
 	}
 
-	public static function admin_notices() {
+	public static function admin_notices(): void {
 		$notice = '';
 		$level  = '';
 		if ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied' ) ) {
@@ -397,14 +397,14 @@ class Niztech_Youtube_Admin {
 	}
 
 	/**
-	 * @param string $class
-	 * @param string $id
 	 * @param string $post_id
 	 *
 	 *
 	 * Returns an array of video content intended for an admin managing the site.
+	 *
+	 * @return array|object|stdClass[]|void|null
 	 */
-	public static function video_content_admin( $post_id ) {
+	public static function video_content_admin( int $post_id ) {
 		global $wpdb;
 		if ( empty( $post_id ) ) {
 			global $post;
