@@ -246,14 +246,14 @@ class Niztech_Youtube_Admin {
 		?>
 
 		<p>
-			<label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
+			<label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
 			<input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url" style="width: 80%;"
 					value="<?php echo $youtube_url ?? ''; ?>">
 			<input type="hidden" name="niztech_video_foreign_key" id="niztech_video_foreign_key"
 					value="<?php echo $youtube_data->id ?? ''; ?>">
 		</p>
 		<p>
-			<label for="niztech_video_youtube_type"><?php _e( 'Type', 'video_source' ); ?></label><br>
+			<label for="niztech_video_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
 			<select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
 				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
 					Playlist
@@ -268,7 +268,7 @@ class Niztech_Youtube_Admin {
 				<?php
 				_e(
 					'Use Youtube Featured Image',
-					'video_source'
+					Niztech_Youtube::PLUGIN_TEXT_DOMAIN
 				);
 				?>
 			</label><br>
