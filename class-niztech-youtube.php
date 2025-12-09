@@ -8,6 +8,15 @@
  * Time: 3:55 PM
  */
 
+/**
+ * Static class that holds form actions
+ */
+class Niztech_Youtube_Form_Actions {
+
+	const Enter_Youtube_Api_Key          = 'enter_youtube_api_key';
+	const Enter_Default_Content_Behavior = 'enter_default_content_behavior';
+}
+
 class Niztech_Youtube {
 	const PLUGIN_PREFIX        = 'niztech_youtube_';
 	const PLUGIN_TEXT_DOMAIN   = 'niztech_youtube';
