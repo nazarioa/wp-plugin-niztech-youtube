@@ -42,7 +42,7 @@ class Niztech_Youtube {
 			session_start();
 		}
 
-		if ( isset( $_POST['action'] ) && $_POST['action'] == 'enter-key' ) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] == Niztech_Youtube_Form_Actions::Enter_Youtube_Api_Key ) {
 			self::enter_api_key();
 		}
 	}

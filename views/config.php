@@ -36,7 +36,7 @@
 						</label>
 				<input class="niztech-youtube-input" id="niztech-youtube-api" name="niztech-youtube-api"
 						value="<?php echo esc_attr( Niztech_Youtube::get_youtube_api_key() ); ?>"/>
-				<input type="hidden" name="action" value="enter-key">
+				<input type="hidden" name="action" value="<?php echo( Niztech_Youtube_Form_Actions::Enter_Youtube_Api_Key ); ?>">
 				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_UPDATE_KEY ); ?>
 				<input type="submit"
 						name="submit"
