@@ -121,6 +121,10 @@ class Niztech_Youtube {
 		return 'not-valid';
 	}
 
+	public static function get_content_behavior(): int {
+		return intval( get_option( self::PLUGIN_PREFIX . '_content_behavior', 0 ) );
+	}
+
 	/**
 	 * Processes the section of Niztech Youtube Settings to save the default behavior.
 	 *
@@ -136,7 +140,10 @@ class Niztech_Youtube {
 		}
 
 		$old_selection = intval( get_option( self::PLUGIN_PREFIX . '_content_behavior', 0 ) );
-		$new_selection = intval( $_POST['niztech-content-behavior'] );
+		$new_selection = match ( $_POST['niztech-content-behavior'] ) {
+			'show' => 1,
+			default => 0,
+		};
 
 		if ( $new_selection != $old_selection ) {
 			update_option( self::PLUGIN_PREFIX . '_content_behavior', $new_selection );

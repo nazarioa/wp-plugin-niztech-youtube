@@ -5,6 +5,8 @@
  * Date: 6/10/18
  * Time: 5:11 PM
  */
+
+$content_behavior = Niztech_Youtube::get_content_behavior();
 ?>
 
 <main class="niztech-youtube-container">
@@ -52,10 +54,19 @@
 				<label class="niztech-youtube-label" for="niztech-youtube-hide-video">Deleted Video Behavior</label>
 
 				<div>
-
 					<select name="niztech-content-behavior" id="niztech-content-behavior">
-						<option value="hide">Hide (default)</option>
-						<option value="show">Show</option>
+						<option value="hide"
+						<?php
+						if ( $content_behavior == 0 ) {
+							echo( ' selected ' );}
+						?>
+						>Hide (default)</option>
+						<option value="show"
+						<?php
+						if ( $content_behavior == 1 ) {
+							echo( ' selected ' );}
+						?>
+						>Show</option>
 					</select>
 					<p>When videos are removed from YouTube, how should the content be rendered by default? <br/>This
 						behavior can be over-ridden per playlist</p>
