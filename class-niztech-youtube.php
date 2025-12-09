@@ -557,14 +557,14 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function delete_playlist_by_id( $id ): void {
+	public static function delete_playlist_by_id( $id ): bool {
 		global $wpdb;
-		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
+		return $wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
 	}
 
-	public static function delete_playlist_by_post_id( $post_id ): void {
+	public static function delete_playlist_by_post_id( $post_id ): bool {
 		global $wpdb;
-		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
+		return $wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
 	}
 
 	public static function hide_video_by_id( int $post_id, int $video_id, bool $hidden ): void {
