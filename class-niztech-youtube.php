@@ -494,7 +494,7 @@ class Niztech_Youtube {
 		if ( $type === Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 			$pattern = '/list=([\w-]+)/i';
 		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO ) {
-			$pattern = '/v=(\w+?)&|v=(\w+?)$/U';
+			$pattern = '/v=([\w-]+?)&|v=([\w-]+?)$/U';
 		}
 
 		preg_match( $pattern, $youtube_url_string, $matches );
