@@ -255,10 +255,10 @@ class Niztech_Youtube_Admin {
 		<p>
 			<label for="niztech_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
 			<select name="niztech_youtube_type" id="niztech_youtube_type">
-				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
+				<option value="Playlist" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
 					Playlist
 				</option>
-				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : ''; ?>>
+				<option value="Video" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : ''; ?>>
 					Single Video
 				</option>
 			</select>
