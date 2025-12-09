@@ -45,6 +45,10 @@ class Niztech_Youtube {
 		if ( isset( $_POST['action'] ) && $_POST['action'] == Niztech_Youtube_Form_Actions::Enter_Youtube_Api_Key ) {
 			self::enter_api_key();
 		}
+
+		if ( isset( $_POST['action'] ) && $_POST['action'] == Niztech_Youtube_Form_Actions::Enter_Default_Content_Behavior ) {
+			self::enter_content_behavior_key();
+		}
 	}
 
 	public static function init_hooks(): void {
@@ -115,6 +119,28 @@ class Niztech_Youtube {
 		}
 
 		return 'not-valid';
+	}
+
+	/**
+	 * Processes the section of Niztech Youtube Settings to save the default behavior.
+	 *
+	 * @return void
+	 */
+	public static function enter_content_behavior_key(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die( __( 'Cheatin&#8217; uh?', self::PLUGIN_TEXT_DOMAIN ) );
+		}
+
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], Niztech_Youtube_Admin::NONCE_CONTENT_BEHAVIOR ) ) {
+			return;
+		}
+
+		$old_selection = intval( get_option( self::PLUGIN_PREFIX . '_content_behavior', 0 ) );
+		$new_selection = intval( $_POST['niztech-content-behavior'] );
+
+		if ( $new_selection != $old_selection ) {
+			update_option( self::PLUGIN_PREFIX . '_content_behavior', $new_selection );
+		}
 	}
 
 	/**

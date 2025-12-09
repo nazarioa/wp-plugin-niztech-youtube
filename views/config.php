@@ -53,17 +53,17 @@
 
 				<div>
 
-					<select>
-						<option>Hide (default)</option>
-						<option>Show</option>
+					<select name="niztech-content-behavior" id="niztech-content-behavior">
+						<option value="hide">Hide (default)</option>
+						<option value="show">Show</option>
 					</select>
 					<p>When videos are removed from YouTube, how should the content be rendered by default? <br/>This
 						behavior can be over-ridden per playlist</p>
 				</div>
 
-				<input type="hidden" name="action" value="enter-key">
+				<input type="hidden" name="action" value="<?php echo( Niztech_Youtube_Form_Actions::Enter_Default_Content_Behavior ); ?>">
 
-				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_UPDATE_KEY ); ?>
+				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_CONTENT_BEHAVIOR ); ?>
 
 				<input type="submit"
 						name="submit"
