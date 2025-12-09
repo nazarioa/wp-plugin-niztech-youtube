@@ -11,8 +11,8 @@
 
 
 class Niztech_Youtube_Admin {
-	const NONCE_UPDATE_KEY         = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
 	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';
+	const NONCE_UPDATE_KEY         = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
 
 	public static function init() {
 		add_action( 'admin_menu', array( 'Niztech_Youtube_Admin', 'admin_menu' ), 3 );
