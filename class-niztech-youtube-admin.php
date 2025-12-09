@@ -174,7 +174,6 @@ class Niztech_Youtube_Admin {
 		}
 
 		if ( ! Niztech_Youtube::is_youtube_url( $youtube_url ) ) {
-			// TODO: Should show error saying it is not a valid URL.
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url', true, 30 );
 
 			return;
