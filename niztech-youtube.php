@@ -16,6 +16,9 @@
  * Author URI: https://www.niztech.com
  */
 
+namespace Niztech\Niztech_Youtube;
+
+
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 } else {
@@ -42,7 +45,7 @@ require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 
 add_action( 'init', array( 'Niztech_Youtube', 'init' ), 1 );
 
-if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+if ( is_admin() || ( defined( 'WP_CLI' ) && \WP_CLI ) ) {
 	require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 	add_action( 'init', array( 'Niztech_Youtube_Admin', 'init' ) );
 }

@@ -37,5 +37,10 @@
 		"lint-fix":  "vendor/bin/phpcbf",
 		"build-prod": "./build.sh",
 		"build-dev": "composer install"
+	},
+	"autoload": {
+		"psr-4": {
+			"Niztech\\Niztech_Youtube\\": "*"
+		}
 	}
 }

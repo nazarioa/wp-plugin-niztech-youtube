@@ -9,6 +9,8 @@
  * Time: 3:45 PM
  */
 
+namespace Niztech\Niztech_Youtube;
+use WordPressCS\WordPress as WP;
 
 class Niztech_Youtube_Admin {
 	const NONCE_CONTENT_BEHAVIOR   = Niztech_Youtube::PLUGIN_PREFIX . '_content_behavior';
@@ -133,7 +135,7 @@ class Niztech_Youtube_Admin {
 	 *
 	 * @param $post_id
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public static function video_source_save( $post_id ): void {
 		$youtube_url             = esc_attr( $_POST['niztech_youtube_url'] ?? '' );
@@ -307,7 +309,7 @@ class Niztech_Youtube_Admin {
 		try {
 			Niztech_Youtube::hide_video_by_id( $post_id, $video_id, $is_hidden );
 			wp_send_json_success();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage() );
 		}
 
@@ -327,13 +329,13 @@ class Niztech_Youtube_Admin {
 	 * @param int    $post_id The post ID the post thumbnail is to be associated with.
 	 * @param string $desc Optional. Description of the image.
 	 *
-	 * @return bool|int|WP_Error Attachment ID, WP_Error object otherwise.
+	 * @return bool|string|\WP_Error Attachment ID, WP_Error object otherwise.
 	 */
-	public static function generate_featured_image( string $file, int $post_id, string $desc = '' ): bool|int|WP_Error {
+	public static function generate_featured_image( string $file, int $post_id, string $desc = '' ): bool|string|\WP_Error {
 		// Set variables for storage, fix file filename for query strings.
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
 		if ( ! $matches ) {
-			return new WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
+			return new WP\WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
 		}
 
 		$file_array         = array();

@@ -8,6 +8,9 @@
  * Time: 3:55 PM
  */
 
+namespace Niztech\Niztech_Youtube;
+
+
 /**
  * Static class that holds form actions
  */
