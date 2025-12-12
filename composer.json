@@ -17,6 +17,7 @@
 		"php": ">=8.2"
 	},
 	"require-dev": {
+		"sniccowp/php-scoper-wordpress-excludes": "^6.8",
 		"codeception/codeception": "^5.3",
 		"wp-coding-standards/wpcs": "^3.0"
 	},
