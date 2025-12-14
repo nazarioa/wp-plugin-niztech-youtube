@@ -16,9 +16,6 @@
  * Author URI: https://www.niztech.com
  */
 
-namespace Niztech\Niztech_Youtube;
-
-
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 } else {

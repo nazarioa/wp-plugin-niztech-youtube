@@ -9,9 +9,6 @@
  * Time: 3:45 PM
  */
 
-namespace Niztech\Niztech_Youtube;
-use WordPressCS\WordPress as WP;
-
 class Niztech_Youtube_Admin {
 	const NONCE_CONTENT_BEHAVIOR   = Niztech_Youtube::PLUGIN_PREFIX . '_content_behavior';
 	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';

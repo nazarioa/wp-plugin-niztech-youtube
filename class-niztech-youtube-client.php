@@ -8,7 +8,6 @@
  * Date: 6/10/18
  * Time: 3:46 PM
  */
-namespace Niztech\Niztech_Youtube;
 
 class Niztech_Youtube_Client {
 
