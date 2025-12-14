@@ -492,7 +492,7 @@ class Niztech_Youtube {
 			throw new Exception( __( 'Niztech Youtube could not configured.', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ) );
 		}
 
-		$client = new Google_Client();
+		$client = new Google\Client();
 		$client->setApplicationName( 'Niztech Youtube' );
 		$client->setDeveloperKey( $api );
 		self::$google_service = new Google\Service\YouTube( $client );
