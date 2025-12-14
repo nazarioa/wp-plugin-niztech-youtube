@@ -24,7 +24,7 @@ rsync -a \
   ./ build/niztech-youtube/
 
 
-cd ./build
+cd ./build || exit
 
 # We want to use the path (./niztech-youtube/vendor) for the final home...
 # therefor, move the vendor folder over to free up the path.
@@ -38,4 +38,4 @@ composer install
 ./vendor/humbug/php-scoper/bin/php-scoper add-prefix --config ./scoper.inc.php
 
 timestamp=$(date +%s)
-zip -rq ../dist/niztech-youtube-$timestamp.zip niztech-youtube/
+zip -rq ../dist/niztech-youtube-"$timestamp".zip niztech-youtube/
