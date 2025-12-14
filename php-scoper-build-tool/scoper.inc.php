@@ -26,7 +26,7 @@ $wpFunctions = getWpExcludedSymbols( 'exclude-wordpress-functions.json' );
 return array(
 	// your unique namespace prefix
 	'prefix'                  => 'Niztech\NiztechYoutubeDependency',
-	'output-dir' => './niztech-youtube/vendor',
+	'output-dir'              => './../dist/niztech-youtube',
 
 	'finders'                 => array(
 		// Scan your vendor directory (except WP ones)
@@ -43,7 +43,7 @@ return array(
 						'vendor-bin',
 					)
 				)
-				->in( __DIR__ . '/niztech-youtube-vendor-pre-process' )
+				->in( __DIR__ . '/../build/niztech-youtube--before-prefix' )
 				->notName( '/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/' ),
 
 		// Optionally include your plugin code (usually not needed)
@@ -51,7 +51,33 @@ return array(
 
 	'exclude-files'           => array(),
 	'exclude-namespaces'      => array(),
-	'patchers'                => array(),
+	'patchers'                => array(
+		static function ( string $filePath, string $prefix, string $content ): string {
+			$altered_content = $content;
+			if ( str_ends_with( $filePath, 'class-niztech-youtube.php' ) ) {
+				$altered_content = str_replace(
+					'new Google\Client(',
+					'new ' . $prefix . '\Google\Client(',
+					$altered_content
+				);
+
+				$altered_content = str_replace(
+					'new Google\Service\YouTube(',
+					'new ' . $prefix . '\Google\Service\YouTube(',
+					$altered_content
+				);
+
+				$altered_content = preg_replace(
+					// For some reason str_replace makes tab and new line characters appear when they should not
+					array( '/\\\n/', '/\\\t+/' ),
+					array( ' ', '' ),
+					$altered_content
+				);
+			}
+
+			return $altered_content;
+		},
+	),
 
 	'expose-namespaces'       => array(
 		// If you want: expose your own plugin namespace

@@ -1,41 +1,51 @@
 #!/bin/bash
+set +x
 
+echo "1 of 7) Removing old files";
 #Remove the contents of previous distributions
-rm -rf ./dist
-mkdir ./dist
+rm -rf ./dist/niztech-youtube/
+mkdir -p ./dist
 
 #Remove old build files
-rm -rf ./build/niztech-youtube/
-rm -rf ./build/vendor/
+rm -rf ./build/niztech-youtube--before-prefix/
 
-# Install dependencies for NiztechYouTube project. Dependencies are not scoped at this point
-composer install --no-dev --optimize-autoloader --classmap-authoritative
+echo "2 of 7) Installing dependencies";
+# Install prod dependencies for NiztechYouTube project. Dependencies are not scoped at this point
+composer install --no-dev --optimize-autoloader --classmap-authoritative --quiet
 
+echo "3 of 7) Creating build/niztech-youtube";
 # Copies the source code and dependencies into the build directory in preparation for scoping
 rsync -a \
   --exclude='.editorconfig*' \
   --exclude='.git*' \
+  --exclude='.idea' \
   --exclude='build' \
-  --exclude='dist' \
   --exclude='build.sh' \
   --exclude='composer.*' \
+  --exclude='dist' \
   --exclude='node_modules' \
   --exclude='tests' \
-  ./ build/niztech-youtube/
+  ./ ./build/niztech-youtube--before-prefix/
 
 
-cd ./build || exit
+cd ./php-scoper-build-tool || exit
 
-# We want to use the path (./niztech-youtube/vendor) for the final home...
-# therefor, move the vendor folder over to free up the path.
-
-mv ./niztech-youtube/vendor ./niztech-youtube-vendor-pre-process
-
+echo "4 of 7) Installing php-scoper";
 # Install dependencies needed by php-scoper
-composer install
+composer install --quiet
 
+echo "5 of 7) Running php-scoper";
 # Run PHPScoper (adds a prefix to namespaces of dependencies) so that we avoid collision
-./vendor/humbug/php-scoper/bin/php-scoper add-prefix --config ./scoper.inc.php
+./vendor/humbug/php-scoper/bin/php-scoper add-prefix -s -q --config ./scoper.inc.php
 
+echo "6 of 7) Zipping";
+cd ../dist || exit
+#bundle it up
 timestamp=$(date +%s)
-zip -rq ../dist/niztech-youtube-"$timestamp".zip niztech-youtube/
+zip -rq ./niztech-youtube-"$timestamp".zip ./niztech-youtube
+
+echo "7 of 7) Cleanup";
+#remove build version of "niztech-youtube" folder
+rm -rf ./niztech-youtube/
+
+echo "Done!";
