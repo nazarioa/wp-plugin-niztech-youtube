@@ -11,15 +11,13 @@
  * Plugin Name: Niztech - YouTube
  * Plugin URI: https://www.niztech.com
  * Description: Simple YouTube data source
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Niztech
  * Author URI: https://www.niztech.com
  */
 
 if ( file_exists( $file = __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
-} elseif ( file_exists( $file = __DIR__ . '/vendor_committed/autoload.php' ) ) {
-	require_once __DIR__ . '/vendor_committed/autoload.php';
 } else {
 	throw new \Exception( 'please run "composer install in "' . __DIR__ . '"' );
 }
@@ -29,7 +27,7 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.0.1' );
+define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.1.0' );
 define( 'NT_YOUTUBE_DATABASE_VERSION', 2 );
 define( 'NT_YOUTUBE__MINIMUM_WP_VERSION', '4.0' );
 define( 'NT_YOUTUBE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -44,7 +42,7 @@ require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 
 add_action( 'init', array( 'Niztech_Youtube', 'init' ), 1 );
 
-if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+if ( is_admin() || ( defined( 'WP_CLI' ) && \WP_CLI ) ) {
 	require_once NT_YOUTUBE__PLUGIN_DIR . 'class-niztech-youtube-admin.php';
 	add_action( 'init', array( 'Niztech_Youtube_Admin', 'init' ) );
 }

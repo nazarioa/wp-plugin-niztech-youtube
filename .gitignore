@@ -1,2 +1,4 @@
 _NOTES/
+build/
+dist/
 vendor/

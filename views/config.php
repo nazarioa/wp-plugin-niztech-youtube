@@ -5,6 +5,8 @@
  * Date: 6/10/18
  * Time: 5:11 PM
  */
+
+$content_behavior = Niztech_Youtube::get_content_behavior();
 ?>
 
 <main class="niztech-youtube-container">
@@ -26,10 +28,17 @@
 		<form action="<?php echo esc_url( Niztech_Youtube_Admin::get_page_url() ); ?>" method="POST">
 			<h2><?php esc_attr_e( 'Google API', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></h2>
 			<div class="niztech-youtube-row">
-				<label class="niztech-youtube-label" for="niztech-youtube-api"><?php esc_attr_e( 'YouTube V3 API Key', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label>
+				<label class="niztech-youtube-label" for="niztech-youtube-api">
+				<?php
+				esc_attr_e(
+					'YouTube V3 API Key',
+					Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+				);
+				?>
+						</label>
 				<input class="niztech-youtube-input" id="niztech-youtube-api" name="niztech-youtube-api"
 						value="<?php echo esc_attr( Niztech_Youtube::get_youtube_api_key() ); ?>"/>
-				<input type="hidden" name="action" value="enter-key">
+				<input type="hidden" name="action" value="<?php echo( Niztech_Youtube_Form_Actions::Enter_Youtube_Api_Key ); ?>">
 				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_UPDATE_KEY ); ?>
 				<input type="submit"
 						name="submit"
@@ -45,17 +54,27 @@
 				<label class="niztech-youtube-label" for="niztech-youtube-hide-video">Deleted Video Behavior</label>
 
 				<div>
-
-				<select>
-					<option>Hide (default)</option>
-					<option>Show</option>
-				</select>
-					<p>When videos are removed from YouTube, how should the content be rendered by default? <br />This behavior can be over-ridden per playlist</p>
+					<select name="niztech-content-behavior" id="niztech-content-behavior">
+						<option value="hide"
+						<?php
+						if ( $content_behavior == 0 ) {
+							echo( ' selected ' );}
+						?>
+						>Hide (default)</option>
+						<option value="show"
+						<?php
+						if ( $content_behavior == 1 ) {
+							echo( ' selected ' );}
+						?>
+						>Show</option>
+					</select>
+					<p>When videos are removed from YouTube, how should the content be rendered by default? <br/>This
+						behavior can be over-ridden per playlist</p>
 				</div>
 
-				<input type="hidden" name="action" value="enter-key">
+				<input type="hidden" name="action" value="<?php echo( Niztech_Youtube_Form_Actions::Enter_Default_Content_Behavior ); ?>">
 
-				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_UPDATE_KEY ); ?>
+				<?php wp_nonce_field( Niztech_Youtube_Admin::NONCE_CONTENT_BEHAVIOR ); ?>
 
 				<input type="submit"
 						name="submit"
@@ -68,8 +87,23 @@
 
 	<section class="niztech-youtube-section">
 		<div class="niztech-youtube-row">
-			<div class="niztech-youtube-label"><?php esc_attr_e( 'Database Version', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></div>
-			<div class="niztech-youtube-input"><?php echo( intval( get_option( Niztech_Youtube::PLUGIN_PREFIX . 'db_version' ), 10 ) ); ?></div>
+			<div class="niztech-youtube-label">
+			<?php
+			esc_attr_e(
+				'Database Version',
+				Niztech_Youtube::PLUGIN_TEXT_DOMAIN
+			);
+			?>
+					</div>
+			<div
+				class="niztech-youtube-input">
+				<?php
+				echo( intval(
+					get_option( Niztech_Youtube::PLUGIN_PREFIX . 'db_version' ),
+					10
+				) );
+				?>
+					</div>
 		</div>
 	</section>
 

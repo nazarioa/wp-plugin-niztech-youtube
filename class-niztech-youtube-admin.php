@@ -9,10 +9,10 @@
  * Time: 3:45 PM
  */
 
-
 class Niztech_Youtube_Admin {
-	const NONCE_UPDATE_KEY         = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
+	const NONCE_CONTENT_BEHAVIOR   = Niztech_Youtube::PLUGIN_PREFIX . '_content_behavior';
 	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';
+	const NONCE_UPDATE_KEY         = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
 
 	public static function init() {
 		add_action( 'admin_menu', array( 'Niztech_Youtube_Admin', 'admin_menu' ), 3 );
@@ -25,7 +25,10 @@ class Niztech_Youtube_Admin {
 		add_action( 'load-post-new.php', array( 'Niztech_Youtube_Admin', 'metabox_video_source_setup' ) );
 
 		add_action( 'wp_ajax_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden' ) );
-		add_action( 'wp_ajax_nopriv_niztech_youtube_admin_hide_video', array( 'Niztech_Youtube_Admin', 'video_mark_hidden_NOOP' ) );
+		add_action(
+			'wp_ajax_nopriv_niztech_youtube_admin_hide_video',
+			array( 'Niztech_Youtube_Admin', 'video_mark_hidden_NOOP' )
+		);
 	}
 
 	public static function load_resources(): void {
@@ -129,14 +132,14 @@ class Niztech_Youtube_Admin {
 	 *
 	 * @param $post_id
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public static function video_source_save( $post_id ): void {
-		$youtube_url             = esc_attr( $_POST['niztech_video_youtube_url'] ?? '' );
-		$youtube_type            = esc_attr( $_POST['niztech_video_youtube_type'] ?? '' );
-		$youtube_use_as_featured = esc_attr( $_POST['niztech_video_use_youtube_featured'] ?? false );
-		$youtube_nonce           = esc_attr( $_POST['niztech_video_source_nonce'] ?? '' );
-		$youtube_foreign_key     = esc_attr( $_POST['niztech_video_foreign_key'] ?? '' );
+		$youtube_url             = esc_attr( $_POST['niztech_youtube_url'] ?? '' );
+		$youtube_type            = esc_attr( $_POST['niztech_youtube_type'] ?? '' );
+		$youtube_use_as_featured = esc_attr( $_POST['niztech_youtube_use_youtube_featured'] ?? false );
+		$youtube_nonce           = esc_attr( $_POST['niztech_youtube_source_nonce'] ?? '' );
+		$youtube_foreign_key     = esc_attr( $_POST['niztech_youtube_foreign_key'] ?? '' );
 
 		// Only save changes if the user clicked save.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -144,7 +147,7 @@ class Niztech_Youtube_Admin {
 		}
 
 		// Validate that the request came from the user via admin screen.
-		if ( ! isset( $_POST['niztech_video_source_nonce'] ) || ! wp_verify_nonce(
+		if ( ! isset( $_POST['niztech_youtube_source_nonce'] ) || ! wp_verify_nonce(
 			$youtube_nonce,
 			Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA
 		) ) {
@@ -171,19 +174,22 @@ class Niztech_Youtube_Admin {
 		}
 
 		if ( ! Niztech_Youtube::is_youtube_url( $youtube_url ) ) {
-			// TODO: Should show error saying it is not a valid URL.
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url', true, 30 );
 
 			return;
 		}
 
-		$youtube_code = '';
 		try {
 			$youtube_code = Niztech_Youtube::extract_youtube_code( $youtube_url, $youtube_type );
 		} catch ( \Exception $e ) {
 			// TODO: Should show error if no valid code found for type
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
 
+			return;
+		}
+
+		if ( empty( $youtube_code ) ) {
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
 			return;
 		}
 
@@ -195,15 +201,14 @@ class Niztech_Youtube_Admin {
 			try {
 				$saved_data = Niztech_Youtube::get_video_info_for( $post_id, $youtube_code, true );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved', true, 30 );
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 			} catch ( \Exception $e ) {
 				// Instead of above do:
 				// get video data from youtube (see get_video_info_for)
 				// if not null save to wp
 				// update post metadata
 				// if null report error
-				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_error', true, 30 );
-
 				return;
 			}
 		} elseif ( $youtube_type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
@@ -212,6 +217,7 @@ class Niztech_Youtube_Admin {
 			try {
 				$saved_data = Niztech_Youtube::get_playlist_info_for( $post_id, $youtube_code, true );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_saved', true, 30 );
+				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 			} catch ( \Exception $e ) {
 
 				// Instead of above do:
@@ -219,9 +225,7 @@ class Niztech_Youtube_Admin {
 				// if not null save to wp,
 				// update post metadata
 				// if null report error
-				update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'type', $youtube_type );
 				set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_playlist_error', true, 30 );
-
 				return;
 			}
 		}
@@ -235,42 +239,42 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ): void {
-		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, 'niztech_video_source_nonce' );
-		$type                = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type' );
-		$use_yt_as_thumbnail = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail' );
+		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, Niztech_Youtube::PLUGIN_PREFIX . 'source_nonce' );
+		$type                = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post->ID );
+		$use_yt_as_thumbnail = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail', $post->ID );
 		$youtube_data        = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post->ID );
-		$youtube_url         = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_url' );
+		$youtube_url         = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_url', $post->ID );
 		?>
 
 		<p>
-			<label for="niztech_video_youtube_url"><?php _e( 'Youtube URL', 'video_source' ); ?></label><br>
-			<input type="text" name="niztech_video_youtube_url" id="niztech_video_youtube_url" style="width: 80%;"
-					value="<?php echo $youtube_url ?? ''; ?>">
-			<input type="hidden" name="niztech_video_foreign_key" id="niztech_video_foreign_key"
+			<label for="niztech_youtube_url"><?php _e( 'Youtube URL', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
+			<input type="text" name="niztech_youtube_url" id="niztech_youtube_url" style="width: 80%;"
+					value="<?php echo $youtube_url; ?>">
+			<input type="hidden" name="niztech_youtube_foreign_key" id="niztech_youtube_foreign_key"
 					value="<?php echo $youtube_data->id ?? ''; ?>">
 		</p>
 		<p>
-			<label for="niztech_video_youtube_type"><?php _e( 'Type', 'video_source' ); ?></label><br>
-			<select name="niztech_video_youtube_type" id="niztech_video_youtube_type">
-				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
+			<label for="niztech_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
+			<select name="niztech_youtube_type" id="niztech_youtube_type">
+				<option value="Playlist" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
 					Playlist
 				</option>
-				<option <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : ''; ?>>
+				<option value="Single Video" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : ''; ?>>
 					Single Video
 				</option>
 			</select>
 		</p>
 		<p>
-			<label for="niztech_video_use_youtube_featured">
+			<label for="niztech_youtube_use_youtube_featured">
 				<?php
 				_e(
 					'Use Youtube Featured Image',
-					'video_source'
+					Niztech_Youtube::PLUGIN_TEXT_DOMAIN
 				);
 				?>
 			</label><br>
-			<input id="niztech_video_use_youtube_featured"
-					name="niztech_video_use_youtube_featured"
+			<input id="niztech_youtube_use_youtube_featured"
+					name="niztech_youtube_use_youtube_featured"
 				<?php echo $use_yt_as_thumbnail ? ' checked ' : ''; ?>
 					type="checkbox">
 		</p>
@@ -302,7 +306,7 @@ class Niztech_Youtube_Admin {
 		try {
 			Niztech_Youtube::hide_video_by_id( $post_id, $video_id, $is_hidden );
 			wp_send_json_success();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage() );
 		}
 
@@ -322,13 +326,13 @@ class Niztech_Youtube_Admin {
 	 * @param int    $post_id The post ID the post thumbnail is to be associated with.
 	 * @param string $desc Optional. Description of the image.
 	 *
-	 * @return bool|int|WP_Error Attachment ID, WP_Error object otherwise.
+	 * @return bool|string|\WP_Error Attachment ID, WP_Error object otherwise.
 	 */
-	public static function generate_featured_image( string $file, int $post_id, string $desc = '' ): bool|int|WP_Error {
+	public static function generate_featured_image( string $file, int $post_id, string $desc = '' ): bool|string|\WP_Error {
 		// Set variables for storage, fix file filename for query strings.
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
 		if ( ! $matches ) {
-			return new WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
+			return new WP\WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
 		}
 
 		$file_array         = array();
@@ -355,7 +359,7 @@ class Niztech_Youtube_Admin {
 		return set_post_thumbnail( $post_id, $id );
 	}
 
-	public static function admin_notices() {
+	public static function admin_notices(): void {
 		$notice = '';
 		$level  = '';
 		if ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied' ) ) {
@@ -394,21 +398,25 @@ class Niztech_Youtube_Admin {
 	}
 
 	/**
-	 * @param string $class
-	 * @param string $id
 	 * @param string $post_id
 	 *
 	 *
 	 * Returns an array of video content intended for an admin managing the site.
+	 *
+	 * @return array|object|stdClass[]|void|null
 	 */
-	public static function video_content_admin( $post_id ) {
+	public static function video_content_admin( int $post_id ) {
 		global $wpdb;
 		if ( empty( $post_id ) ) {
 			global $post;
 			$post_id = $post->ID;
 		}
 
-		$type               = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post_id );
+		$type = Niztech_Youtube::video_source_get_meta(
+			Niztech_Youtube::PLUGIN_PREFIX . 'type',
+			$post_id
+		);
+
 		$foreign_key_object = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key( $type, $post_id );
 
 		if ( empty( $foreign_key_object ) || empty( $type ) ) {
@@ -416,7 +424,6 @@ class Niztech_Youtube_Admin {
 		}
 
 		if ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
-
 			return $wpdb->get_results(
 				'SELECT * FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
 				" WHERE playlist_id = $foreign_key_object->id;"
@@ -465,8 +472,15 @@ class Niztech_Youtube_Admin {
 				);
 			}
 			$id_attrib    = ( empty( $id ) ? '' : sprintf( 'id="%s"', $id ) );
-			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf( 'class="niztech-youtube-thumbnails %s"', $class );
-			$output       = sprintf( '<ol %s">%s</ol>', implode( ' ', array( $id_attrib, $class_attrib ) ), $videos_html );
+			$class_attrib = empty( $class ) ? 'class="niztech-youtube-thumbnails' : sprintf(
+				'class="niztech-youtube-thumbnails %s"',
+				$class
+			);
+			$output       = sprintf(
+				'<ol %s">%s</ol>',
+				implode( ' ', array( $id_attrib, $class_attrib ) ),
+				$videos_html
+			);
 		}
 
 		echo $output;

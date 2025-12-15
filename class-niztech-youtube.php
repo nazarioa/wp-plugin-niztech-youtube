@@ -8,6 +8,15 @@
  * Time: 3:55 PM
  */
 
+/**
+ * Static class that holds form actions
+ */
+class Niztech_Youtube_Form_Actions {
+
+	const Enter_Youtube_Api_Key          = 'enter_youtube_api_key';
+	const Enter_Default_Content_Behavior = 'enter_default_content_behavior';
+}
+
 class Niztech_Youtube {
 	const PLUGIN_PREFIX        = 'niztech_youtube_';
 	const PLUGIN_TEXT_DOMAIN   = 'niztech_youtube';
@@ -22,7 +31,7 @@ class Niztech_Youtube {
 	private static array $notices              = array();
 	private static int $video_stale_limit_days = 3;
 
-	private static $youtube_v3_api_key = '';
+	private static string $youtube_v3_api_key = '';
 
 	public static function init() {
 		if ( ! self::$initiated ) {
@@ -33,8 +42,12 @@ class Niztech_Youtube {
 			session_start();
 		}
 
-		if ( isset( $_POST['action'] ) && $_POST['action'] == 'enter-key' ) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] == Niztech_Youtube_Form_Actions::Enter_Youtube_Api_Key ) {
 			self::enter_api_key();
+		}
+
+		if ( isset( $_POST['action'] ) && $_POST['action'] == Niztech_Youtube_Form_Actions::Enter_Default_Content_Behavior ) {
+			self::enter_content_behavior_key();
 		}
 	}
 
@@ -85,7 +98,7 @@ class Niztech_Youtube {
 			return self::$youtube_v3_api_key;
 		}
 
-		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key . '' );
+		return get_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', self::$youtube_v3_api_key );
 	}
 
 	public static function set_youtube_api_key( $api_key ): void {
@@ -108,14 +121,43 @@ class Niztech_Youtube {
 		return 'not-valid';
 	}
 
+	public static function get_content_behavior(): int {
+		return intval( get_option( self::PLUGIN_PREFIX . '_content_behavior', 0 ) );
+	}
+
+	/**
+	 * Processes the section of Niztech Youtube Settings to save the default behavior.
+	 *
+	 * @return void
+	 */
+	public static function enter_content_behavior_key(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die( __( 'Cheatin&#8217; uh?', self::PLUGIN_TEXT_DOMAIN ) );
+		}
+
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], Niztech_Youtube_Admin::NONCE_CONTENT_BEHAVIOR ) ) {
+			return;
+		}
+
+		$old_selection = intval( get_option( self::PLUGIN_PREFIX . '_content_behavior', 0 ) );
+		$new_selection = match ( $_POST['niztech-content-behavior'] ) {
+			'show' => 1,
+			default => 0,
+		};
+
+		if ( $new_selection != $old_selection ) {
+			update_option( self::PLUGIN_PREFIX . '_content_behavior', $new_selection );
+		}
+	}
+
 	/**
 	 * version 1 of database migration - initial
 	 *
 	 * @return void
 	 */
 	public static function v1_initial(): void {
-		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
-		if ( $active_database_version > 1 ) {
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ) );
+		if ( $active_database_version >= 1 ) {
 			return;
 		}
 
@@ -129,7 +171,7 @@ class Niztech_Youtube {
 			post_id bigint(20) NOT NULL,
 			youtube_playlist_code varchar(255) NOT NULL,
 			last_refresh datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			PRIMARY KEY  (id)
+			PRIMARY KEY (id)
 		) $charset_collate;";
 
 		// create table videos
@@ -171,25 +213,28 @@ class Niztech_Youtube {
 	 * adds a column
 	 *
 	 * @return void
+	 * @throws Exception
 	 */
 	public static function v2_hide_video_override(): void {
-		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ), 10 );
-		if ( $active_database_version > 2 ) {
+		$active_database_version = intval( get_option( self::PLUGIN_PREFIX . 'db_version' ) );
+		if ( $active_database_version >= 2 ) {
 			return;
 		}
 
 		global $wpdb;
 
 		$table_video_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
-		$sql              = "ALTER TABLE $table_video_name ADD COLUMN IF NOT EXISTS hidden TINYINT NULL DEFAULT 0;";
 
-		$query_result = $wpdb->query( $sql );
-		if ( $query_result === false ) {
-			// error occurred
-			die();
-		} else {
-			update_option( self::PLUGIN_PREFIX . 'db_version', 2 );
+		$sql_verify        = "SELECT COUNT(*) AS cnt FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '$table_video_name' AND COLUMN_NAME = 'hidden';";
+		$sql_verify_result = $wpdb->get_results( $sql_verify );
+		if ( count( $sql_verify_result ) < 1 && $sql_verify_result[0]->cnt < 1 ) {
+			$sql          = "ALTER TABLE $table_video_name ADD COLUMN hidden TINYINT NULL DEFAULT 0;";
+			$query_result = $wpdb->query( $sql );
+			if ( $query_result === false ) {
+				throw new Exception( 'Could not update database.' );
+			}
 		}
+		update_option( self::PLUGIN_PREFIX . 'db_version', 2 );
 	}
 
 	/**
@@ -309,9 +354,12 @@ class Niztech_Youtube {
 	 * @return object
 	 * @throws Exception
 	 */
-	public static function get_playlist_info_for( int $post_id, string $youtube_playlist_code = '', bool $bypass_cached_data = false ): object {
+	public static function get_playlist_info_for(
+		int $post_id,
+		string $youtube_playlist_code = '',
+		bool $bypass_cached_data = false
+	): object {
 		global $wpdb;
-		$foreign_playlist_id = null;
 
 		// Query cached data
 		$foreign_data = Niztech_Youtube::get_video_or_playlist_code_and_foreign_key(
@@ -350,8 +398,8 @@ class Niztech_Youtube {
 		if ( ! empty( $existing_playlist->id ) ) {
 			$playlist_data = $wpdb->get_row(
 				'SELECT * ' .
-											'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
-											'WHERE playlist_id = "' . $existing_playlist->id . '";'
+				'FROM ' . $wpdb->prefix . self::TBL_VIDEOS . ' ' .
+				'WHERE playlist_id = "' . $existing_playlist->id . '";'
 			);
 		}
 
@@ -389,7 +437,11 @@ class Niztech_Youtube {
 		return $wpdb->insert_id;
 	}
 
-	public static function get_video_info_for( int $post_id, string $youtube_video_code = '', bool $bypass_cached_data = false ): array|null|object {
+	public static function get_video_info_for(
+		int $post_id,
+		string $youtube_video_code = '',
+		bool $bypass_cached_data = false
+	): array|null|object {
 		if ( empty( $youtube_video_code ) ) {
 			return null;
 		}
@@ -440,7 +492,7 @@ class Niztech_Youtube {
 			throw new Exception( __( 'Niztech Youtube could not configured.', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ) );
 		}
 
-		$client = new Google_Client();
+		$client = new Google\Client();
 		$client->setApplicationName( 'Niztech Youtube' );
 		$client->setDeveloperKey( $api );
 		self::$google_service = new Google\Service\YouTube( $client );
@@ -483,7 +535,7 @@ class Niztech_Youtube {
 		if ( $type === Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
 			$pattern = '/list=([\w-]+)/i';
 		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO ) {
-			$pattern = '/v=(\w+?)&|v=(\w+?)$/U';
+			$pattern = '/v=([\w-]+?)&|v=([\w-]+?)$/U';
 		}
 
 		preg_match( $pattern, $youtube_url_string, $matches );
@@ -500,15 +552,15 @@ class Niztech_Youtube {
 	 *
 	 * @return bool|string
 	 */
-	public static function video_source_get_meta( $value, $post_id = null ): bool|string {
+	public static function video_source_get_meta( $key, $post_id = null ): bool|string {
 		if ( empty( $post_id ) ) {
 			global $post;
 			$post_id = $post->ID;
 		}
 
-		$field = get_post_meta( $post_id, $value, true );
-		if ( ! empty( $field ) ) {
-			return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
+		$value = get_post_meta( $post_id, $key, true );
+		if ( ! empty( $value ) ) {
+			return is_array( $value ) ? stripslashes_deep( $value ) : stripslashes( wp_kses_decode_entities( $value ) );
 		} else {
 			return false;
 		}
@@ -546,14 +598,14 @@ class Niztech_Youtube {
 		}
 	}
 
-	public static function delete_playlist_by_id( $id ): void {
+	public static function delete_playlist_by_id( $id ): bool {
 		global $wpdb;
-		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
+		return $wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'id' => $id ) );
 	}
 
-	public static function delete_playlist_by_post_id( $post_id ): void {
+	public static function delete_playlist_by_post_id( $post_id ): bool {
 		global $wpdb;
-		$wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
+		return $wpdb->delete( $wpdb->prefix . self::TBL_PLAYLIST, array( 'post_id' => $post_id ) );
 	}
 
 	public static function hide_video_by_id( int $post_id, int $video_id, bool $hidden ): void {
