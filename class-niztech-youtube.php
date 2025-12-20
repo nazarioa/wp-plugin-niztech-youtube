@@ -527,8 +527,7 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * @param string $youtube_url_string
-	 * @param string $type
+	 * Extracts the youtube code from the URL.
 	 *
 	 * @return string
 	 * @throws Exception
