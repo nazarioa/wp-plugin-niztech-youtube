@@ -14,9 +14,14 @@ class Niztech_Youtube_Admin {
 	const NONCE_SAVE_PLAYLIST_DATA = Niztech_Youtube::PLUGIN_PREFIX . '_admin_save_playlist_data';
 	const NONCE_UPDATE_KEY         = Niztech_Youtube::PLUGIN_PREFIX . '_update_key';
 
-	public static function init() {
+	/**
+	 * Setup
+	 */
+	public static function init(): void {
 		add_action( 'admin_menu', array( 'Niztech_Youtube_Admin', 'admin_menu' ), 3 );
-		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_resources' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_base_resources' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_admin_post_resources' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Niztech_Youtube_Admin', 'load_plugin_settings_resources' ) );
 
 		add_action( 'save_post', array( 'Niztech_Youtube_Admin', 'video_source_save' ) );
 		add_action( 'admin_notices', array( 'Niztech_Youtube_Admin', 'admin_notices' ) );
@@ -31,27 +36,47 @@ class Niztech_Youtube_Admin {
 		);
 	}
 
-	public static function load_resources(): void {
+	/**
+	 * Loads bas CSS and JS needed by other CSS and JS.
+	 * wp-admin/post.php
+	 *
+	 * @return void
+	 */
+	public static function load_base_resources(): void {
+		wp_register_style(
+			'niztech_youtube_base.css',
+			plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube_base.css',
+			array(),
+			NT_YOUTUBE_PLUGIN_VERSION
+		);
+		wp_enqueue_style( 'niztech_youtube_base.css' );
+	}
+
+
+	/**
+	 * Loads and renders CSS and JS needed for the Niztech Youtube plugin post page.
+	 * wp-admin/post.php
+	 *
+	 * @return void
+	 */
+	public static function load_admin_post_resources(): void {
 		global $hook_suffix;
 		if ( in_array(
 			$hook_suffix,
 			apply_filters(
 				'niztech_youtube_admin_page_hook_suffixes',
 				array(
-					'index.php', // dashboard
 					'post.php',
-					'settings_page_niztech-youtube-config',
-					'plugins.php',
 				)
 			)
 		) ) {
 			wp_register_style(
-				'niztech_youtube.css',
-				plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube.css',
-				array(),
+				'niztech_youtube_admin',
+				plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube_admin.css',
+				array( 'niztech_youtube_base.css' ),
 				NT_YOUTUBE_PLUGIN_VERSION
 			);
-			wp_enqueue_style( 'niztech_youtube.css' );
+			wp_enqueue_style( 'niztech_youtube_admin' );
 
 			wp_enqueue_script(
 				'niztech_youtube_admin.js',
@@ -68,6 +93,32 @@ class Niztech_Youtube_Admin {
 					'nonce'   => wp_create_nonce( 'niztech-youtube-ajax-nonce' ),
 				)
 			);
+		}
+	}
+
+
+	/**
+	 * Loads and renders CSS and JS needed for the Niztech Youtube plugin settings page.
+	 * wp-admin/options-general.php?page=niztech-youtube-config
+	 *
+	 * @return void
+	 */
+	public static function load_plugin_settings_resources(): void {
+		global $hook_suffix;
+		if ( in_array(
+			$hook_suffix,
+			apply_filters(
+				'niztech_youtube_settings_page_hook_suffixes',
+				array( 'settings_page_niztech-youtube-config' )
+			)
+		) ) {
+			wp_register_style(
+				'niztech_youtube_settings.css',
+				plugin_dir_url( __FILE__ ) . '_inc/niztech_youtube_settings.css',
+				array( 'niztech_youtube_base.css' ),
+				NT_YOUTUBE_PLUGIN_VERSION
+			);
+			wp_enqueue_style( 'niztech_youtube_settings.css' );
 		}
 	}
 
