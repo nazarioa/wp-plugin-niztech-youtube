@@ -302,15 +302,17 @@ class Niztech_Youtube_Admin {
 					value="<?php echo $youtube_data->id ?? ''; ?>">
 		</p>
 		<p>
-			<label for="niztech_youtube_type"><?php _e( 'Type', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?></label><br>
-			<select name="niztech_youtube_type" id="niztech_youtube_type">
-				<option value="Playlist" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) ? 'selected' : ''; ?>>
-					Playlist
-				</option>
-				<option value="Single Video" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'selected' : ''; ?>>
-					Single Video
-				</option>
-			</select>
+			<?php _e( 'Would you like to show a playlist or a single video?', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>
+			<br />
+			<radiogroup  id="niztech_youtube_type">
+				<label><?php _e( 'Playlist', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>
+				<input name="niztech_youtube_type" type="radio" value="Playlist" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST || empty( $type ) ) ? 'checked' : ''; ?> id="niztech_youtube_type_playlist"/>
+				</label>
+				<br />
+				<label><?php _e( 'Single Video', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>
+				<input name="niztech_youtube_type" type="radio" value="Single Video" <?php echo ( ! empty( $type ) && $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) ? 'checked' : ''; ?> id="niztech_youtube_type_single_video" />
+				</label>
+			</radiogroup>
 		</p>
 		<p>
 			<label for="niztech_youtube_use_youtube_featured">
