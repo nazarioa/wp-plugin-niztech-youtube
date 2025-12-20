@@ -526,16 +526,25 @@ class Niztech_Youtube {
 		return false;
 	}
 
+	/**
+	 * @param string $youtube_url_string
+	 * @param string $type
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	public static function extract_youtube_code(
-		$youtube_url_string = '',
-		$type = Niztech_Youtube::TYPE_OPTION_VIDEO
+		string $youtube_url_string = '',
+		string $type = Niztech_Youtube::TYPE_OPTION_VIDEO
 	): string {
 		$matches = array();
 		$pattern = '';
-		if ( $type === Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+		if ( Niztech_Youtube::TYPE_OPTION_PLAYLIST === $type ) {
 			$pattern = '/list=([\w-]+)/i';
-		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO ) {
+		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO === $type ) {
 			$pattern = '/v=([\w-]+?)&|v=([\w-]+?)$/U';
+		} else {
+			throw new \Exception( 'Unexpected type selected ' . $type . ' code' );
 		}
 
 		preg_match( $pattern, $youtube_url_string, $matches );
