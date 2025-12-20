@@ -157,7 +157,6 @@ class Niztech_Youtube_Admin {
 		// Validate that the user has permission to make changes.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_permission_denied', true, 30 );
-
 			return;
 		}
 
@@ -166,25 +165,20 @@ class Niztech_Youtube_Admin {
 			Niztech_Youtube::delete_playlist_by_post_id( $post_id );
 			Niztech_Youtube::delete_video_by_post_playlist( $post_id, null );
 
-			// TODO: Supply a message stating that all data was removed.
 			// or instead have an explicit delete button. Leave what is in the database behind
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_deleted', true, 30 );
-
 			return;
 		}
 
 		if ( ! Niztech_Youtube::is_youtube_url( $youtube_url ) ) {
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_invalid_url', true, 30 );
-
 			return;
 		}
 
 		try {
 			$youtube_code = Niztech_Youtube::extract_youtube_code( $youtube_url, $youtube_type );
 		} catch ( \Exception $e ) {
-			// TODO: Should show error if no valid code found for type
 			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
-
 			return;
 		}
 
