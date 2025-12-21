@@ -284,6 +284,9 @@ class Niztech_Youtube_Admin {
 	}
 
 	public static function metabox_video_source_playlist_html( $post ): void {
+		$screen = get_current_screen();
+		$is_add = $screen->action == 'add';
+
 		wp_nonce_field( Niztech_Youtube_Admin::NONCE_SAVE_PLAYLIST_DATA, Niztech_Youtube::PLUGIN_PREFIX . 'source_nonce' );
 		$type                = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'type', $post->ID );
 		$use_yt_as_thumbnail = Niztech_Youtube::video_source_get_meta( Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail', $post->ID );
@@ -320,7 +323,7 @@ class Niztech_Youtube_Admin {
 			</label><br>
 			<input id="niztech_youtube_use_youtube_featured"
 					name="niztech_youtube_use_youtube_featured"
-				<?php echo $use_yt_as_thumbnail ? ' checked ' : ''; ?>
+				<?php echo $is_add || $use_yt_as_thumbnail ? ' checked ' : ''; ?>
 					type="checkbox">
 		</p>
 		<p>
