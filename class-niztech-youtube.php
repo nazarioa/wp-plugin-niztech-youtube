@@ -151,7 +151,7 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * version 1 of database migration - initial
+	 * Version 1 of database migration - initial
 	 *
 	 * @return void
 	 */
@@ -164,7 +164,7 @@ class Niztech_Youtube {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// create table playlist
+		// Create table playlist.
 		$table_playlist_name = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
 		$sql_create_playlist = "CREATE TABLE $table_playlist_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -174,7 +174,7 @@ class Niztech_Youtube {
 			PRIMARY KEY (id)
 		) $charset_collate;";
 
-		// create table videos
+		// Create table videos.
 		$table_video_name       = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
 		$sql_create_video_table = "CREATE TABLE $table_video_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -209,7 +209,7 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * version 2 of database migration
+	 * Version 2 of database migration.
 	 * adds a column
 	 *
 	 * @return void
@@ -269,11 +269,7 @@ class Niztech_Youtube {
 	}
 
 	/**
-	 * ref: https://codex.wordpress.org/Creating_Tables_with_Plugins
-	 *
-	 * @param $playlist_id
-	 * @param $post_id
-	 * @param array $data
+	 * Ref: https://codex.wordpress.org/Creating_Tables_with_Plugins.
 	 *
 	 * @throws Exception
 	 */
@@ -284,7 +280,7 @@ class Niztech_Youtube {
 			return;
 		}
 
-		// Take $data and stores it into database
+		// Take $data and stores it into database.
 		foreach ( $data as $datum ) {
 			Niztech_Youtube::commit_video_data_to_wp(
 				$post_id,
@@ -305,14 +301,6 @@ class Niztech_Youtube {
 		);
 	}
 
-	/**
-	 * @param int    $post_id
-	 * @param string $video_code
-	 * @param int    $playlist_id
-	 * @param string $title
-	 * @param string $description
-	 * @param object $thumbnails
-	 */
 	public static function commit_video_data_to_wp(
 		int $post_id,
 		string $video_code,
@@ -347,11 +335,7 @@ class Niztech_Youtube {
 	 * Queries the local database for playlist data. If the data is older than a few days
 	 * make the request back to google
 	 *
-	 * @param int    $post_id
-	 * @param string $youtube_playlist_code
-	 * @param bool   $bypass_cached_data
 	 *
-	 * @return object
 	 * @throws Exception
 	 */
 	public static function get_playlist_info_for(
@@ -450,7 +434,7 @@ class Niztech_Youtube {
 			$raw_data = self::query_video_data_from_youtube( $youtube_video_code );
 			// TODO: Maybe have a cleanup function for that takes $raw_data->items.
 			if ( ! empty( $raw_data ) ) {
-				// Remove existing data
+				// Remove existing data.
 				Niztech_Youtube::delete_video_by_post_playlist( $post_id, 0 );
 				Niztech_Youtube::commit_video_data_to_wp(
 					$post_id,
@@ -463,7 +447,7 @@ class Niztech_Youtube {
 			}
 		}
 
-		// query local database for info
+		// Query local database for info.
 		global $wpdb;
 		$query = 'SELECT * ' .
 				'FROM ' . $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS .
