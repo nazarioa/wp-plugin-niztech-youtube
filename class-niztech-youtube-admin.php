@@ -229,7 +229,7 @@ class Niztech_Youtube_Admin {
 		try {
 			$youtube_code = Niztech_Youtube::extract_youtube_code( $youtube_url, $youtube_type );
 		} catch ( \Exception $e ) {
-			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted', true, 30 );
+			set_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_youtube_code_extraction_error', true, 30 );
 			return;
 		}
 
@@ -428,6 +428,10 @@ class Niztech_Youtube_Admin {
 			$level  = 'notice-error';
 			$notice = __( 'The video URL appears to be a Youtube URL but a valid playlist or video code could not be extracted.' );
 			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_no_youtube_code_extracted' );
+		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_youtube_code_extraction_error' ) ) {
+			$level  = 'notice-error';
+			$notice = __( 'The video URL appears to be a Youtube URL but we failed to extract a usable code.' );
+			delete_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_youtube_code_extraction_error' );
 		} elseif ( get_transient( Niztech_Youtube::PLUGIN_PREFIX . 'video_source_save_video_saved' ) ) {
 			$notice = __( 'Your Youtube video was added to your website' );
 			$level  = 'notice-success';

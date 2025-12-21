@@ -547,8 +547,9 @@ class Niztech_Youtube {
 		}
 
 		preg_match( $pattern, $youtube_url_string, $matches );
+
 		if ( sizeof( $matches ) > 0 ) {
-			return $matches[1];
+			return $matches[ sizeof( $matches ) - 1 ];
 		}
 
 		throw new \Exception( 'Input does not appear to have a valid ' . $type . ' code' );
