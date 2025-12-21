@@ -304,7 +304,7 @@ class Niztech_Youtube_Admin {
 		<p>
 			<?php _e( 'Would you like to show a playlist or a single video?', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>
 			<br />
-			<radiogroup  id="niztech_youtube_type">
+			<radiogroup>
 				<label><?php _e( 'Playlist', Niztech_Youtube::PLUGIN_TEXT_DOMAIN ); ?>
 				<input name="niztech_youtube_type" type="radio" value="Playlist" <?php echo ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST || empty( $type ) ) ? 'checked' : ''; ?> id="niztech_youtube_type_playlist"/>
 				</label>
