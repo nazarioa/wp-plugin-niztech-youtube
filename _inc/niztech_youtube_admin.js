@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param value
  */
 function validatType (value) {
-	console.log(' >>> NAZ: value', value);
 	const playlistRadio = document.querySelector('#niztech_youtube_type_playlist');
 	const singleVideoRadio = document.querySelector('#niztech_youtube_type_single_video');
 	const validPlaylist = !value ? false : new RegExp(/list=([\w-]+?)&|list=([\w-]+?)$/, 'i').test(value);
