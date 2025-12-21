@@ -103,7 +103,7 @@ class Niztech_Youtube {
 
 	public static function set_youtube_api_key( $api_key ): void {
 		$key_status = self::verify_key( $api_key );
-		if ( $key_status === 'valid' ) {
+		if ( 'valid' === $key_status ) {
 			self::$notices['status']  = 'key-valid';
 			self::$youtube_v3_api_key = $api_key;
 			update_option( self::PLUGIN_PREFIX . '_youtube_v3_api_key', $api_key );
@@ -230,7 +230,7 @@ class Niztech_Youtube {
 		if ( count( $sql_verify_result ) < 1 && $sql_verify_result[0]->cnt < 1 ) {
 			$sql          = "ALTER TABLE $table_video_name ADD COLUMN hidden TINYINT NULL DEFAULT 0;";
 			$query_result = $wpdb->query( $sql );
-			if ( $query_result === false ) {
+			if ( false === $query_result ) {
 				throw new Exception( 'Could not update database.' );
 			}
 		}
@@ -504,11 +504,11 @@ class Niztech_Youtube {
 
 		if ( empty( $type ) || empty( $post_id ) ) {
 			return null;
-		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_PLAYLIST ) {
+		} elseif ( Niztech_Youtube::TYPE_OPTION_PLAYLIST === $type ) {
 			$video_tbl_name = $wpdb->prefix . Niztech_Youtube::TBL_PLAYLIST;
 			$query          = "SELECT id, post_id, youtube_playlist_code as youtube_code FROM $video_tbl_name WHERE post_id = $post_id";
 
-		} elseif ( $type == Niztech_Youtube::TYPE_OPTION_VIDEO ) {
+		} elseif ( Niztech_Youtube::TYPE_OPTION_VIDEO === $type ) {
 			$video_tbl_name = $wpdb->prefix . Niztech_Youtube::TBL_VIDEOS;
 			$query          = "SELECT id, post_id, youtube_video_code as youtube_code FROM $video_tbl_name WHERE post_id = $post_id";
 		}
@@ -519,7 +519,7 @@ class Niztech_Youtube {
 	public static function is_youtube_url( $youtube_url_string ): bool {
 		$youtube_url_string = trim( $youtube_url_string );
 		$isYoutubeLink      = preg_match( '/^(http|https):\/\/www\.youtube\.com/', $youtube_url_string );
-		if ( $isYoutubeLink === 1 ) {
+		if ( 1 === $isYoutubeLink ) {
 			return true;
 		}
 

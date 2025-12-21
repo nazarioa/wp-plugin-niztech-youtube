@@ -278,7 +278,7 @@ class Niztech_Youtube_Admin {
 		update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_thumbnail', $youtube_use_as_featured );
 		update_post_meta( $post_id, Niztech_Youtube::PLUGIN_PREFIX . 'use_yt_url', $youtube_url );
 		$filePath = $saved_data->thumbnail_maxres_url ?? $saved_data->thumbnail_standard_url ?? $saved_data->thumbnail_default_url ?? null;
-		if ( $youtube_use_as_featured === 'on' && $filePath ) {
+		if ( 'on' === $youtube_use_as_featured && $filePath ) {
 			Niztech_Youtube_Admin::generate_featured_image( $filePath, $post_id, $saved_data->description );
 		}
 	}
