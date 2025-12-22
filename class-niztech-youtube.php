@@ -335,7 +335,6 @@ class Niztech_Youtube {
 	 * Queries the local database for playlist data. If the data is older than a few days
 	 * make the request back to google
 	 *
-	 *
 	 * @throws Exception
 	 */
 	public static function get_playlist_info_for(

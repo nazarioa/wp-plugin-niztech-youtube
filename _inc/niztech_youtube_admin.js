@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
 	const youtubeUrlInputValue = youtubeUrlInput.getAttribute('value');
 	validatType(youtubeUrlInputValue);
 
-	const checkmarks = document.querySelectorAll('.niztech-youtube-thumbnails input[type="checkbox"]');
+	const checkmarks = document.querySelectorAll(
+		'.niztech-youtube-thumbnails input[type="checkbox"]'
+	);
 	if (checkmarks.length > 0) {
 		checkmarks.forEach((checkmark) => {
 			checkmark.addEventListener('click', (evt) => {
-
 				const isChecked = evt.target.checked;
 				const postId = evt.target.name;
 				const videoId = evt.target.value;
@@ -19,22 +20,25 @@ document.addEventListener('DOMContentLoaded', function () {
 				form.append('post_id', postId);
 				form.append('video_id', videoId);
 
-				fetch(`${myAjax.ajaxurl}?action=niztech_youtube_admin_hide_video`, {
-					body: form,
-					method: 'POST',
-					headers: {
-						Accept: 'application/json'
-					},
-				})
-					.then(response => response.json())
-					.then(data => {
+				fetch(
+					`${myAjax.ajaxurl}?action=niztech_youtube_admin_hide_video`,
+					{
+						body: form,
+						method: 'POST',
+						headers: {
+							Accept: 'application/json',
+						},
+					}
+				)
+					.then((response) => response.json())
+					.then((data) => {
 						if (data.success) {
 							console.log('Success:', data.data);
 						} else {
 							console.error('Error:', data.data);
 						}
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.error('Fetch Error:', error);
 					});
 			});
@@ -44,7 +48,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const youtubeUrlInput = document.querySelector('#niztech_youtube_url');
-	youtubeUrlInput.addEventListener('blur', (evt) => validatType(evt?.target?.value));
+	youtubeUrlInput.addEventListener('blur', (evt) =>
+		validatType(evt?.target?.value)
+	);
 });
 
 /**
@@ -52,11 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
  * (Playlist, Single Video)
  * @param value
  */
-function validatType (value) {
-	const playlistRadio = document.querySelector('#niztech_youtube_type_playlist');
-	const singleVideoRadio = document.querySelector('#niztech_youtube_type_single_video');
-	const validPlaylist = !value ? false : new RegExp(/list=([\w-]+?)&|list=([\w-]+?)$/, 'i').test(value);
-	const validSingleVideo = !value ? false : new RegExp(/v=([\w-]+?)&|v=([\w-]+?)$/, 'i').test(value);
+function validatType(value) {
+	const playlistRadio = document.querySelector(
+		'#niztech_youtube_type_playlist'
+	);
+	const singleVideoRadio = document.querySelector(
+		'#niztech_youtube_type_single_video'
+	);
+	const validPlaylist = !value
+		? false
+		: new RegExp(/list=([\w-]+?)&|list=([\w-]+?)$/, 'i').test(value);
+	const validSingleVideo = !value
+		? false
+		: new RegExp(/v=([\w-]+?)&|v=([\w-]+?)$/, 'i').test(value);
 
 	// What buttons should be disabled
 	// should playlist be disabled
@@ -74,8 +88,8 @@ function validatType (value) {
 
 	// What should be checked
 	if (!validPlaylist && validSingleVideo) {
-		singleVideoRadio.setAttribute( 'checked', 'checked' );
+		singleVideoRadio.setAttribute('checked', 'checked');
 	} else if (validPlaylist && !validSingleVideo) {
-		playlistRadio.setAttribute( 'checked', 'checked' );
+		playlistRadio.setAttribute('checked', 'checked');
 	}
 }
