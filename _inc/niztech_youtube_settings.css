@@ -1,7 +1,7 @@
 .niztech-youtube-container {
-	width: 80%;
-	margin: 2em auto 0 auto;
 	font-size: 16pt;
+	margin: 2em auto 0 auto;
+	width: 80%;
 
 	h2 {
 		font-size: 1.2rem;
@@ -15,9 +15,9 @@
 }
 
 .niztech-youtube-section {
-	padding: 1.5rem;
 	background-color: #fefefe;
 	border: 1px solid #dedede;
+	padding: 1.5rem;
 }
 
 .niztech-youtube-logo {
@@ -25,14 +25,14 @@
 }
 
 .niztech-youtube-row {
+	align-items: center;
+	border: 1px solid transparent;
 	display: grid;
-	grid-template-columns: 2fr 5fr 1fr;
 	grid-auto-rows: auto;
 	grid-gap: 1rem;
-	align-items: center;
+	grid-template-columns: 2fr 5fr 1fr;
 	margin: 1rem 0;
 	padding: 1rem;
-	border: 1px solid transparent;
 
 	&:hover {
 		background-color: rgba(200,200,200, 0.2);
