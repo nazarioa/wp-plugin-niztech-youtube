@@ -34,8 +34,14 @@
 		}
 	},
 	"scripts": {
-		"lint":  "vendor/bin/phpcs  -ns .",
-		"lint-fix":  "vendor/bin/phpcbf",
+		"lint": [
+			"vendor/bin/phpcs  -ns .",
+			"./node_modules/.bin/prettier . --check"
+		],
+		"lint-fix": [
+			"vendor/bin/phpcbf",
+			"./node_modules/.bin/prettier . --write"
+		],
 		"build-prod": "./build.sh",
 		"build-dev": "composer install"
 	},
