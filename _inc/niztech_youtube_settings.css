@@ -1,0 +1,56 @@
+.niztech-youtube-container {
+	font-size: 16pt;
+	margin: 2em auto 0 auto;
+	width: 80%;
+
+	h2 {
+		font-size: 1.2rem;
+	}
+}
+
+.niztech-youtube-mast {
+	font-size: 1.8rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+}
+
+.niztech-youtube-section {
+	background-color: #fefefe;
+	border: 1px solid #dedede;
+	padding: 1.5rem;
+}
+
+.niztech-youtube-logo {
+	width: 2rem;
+}
+
+.niztech-youtube-row {
+	align-items: center;
+	border: 1px solid transparent;
+	display: grid;
+	grid-auto-rows: auto;
+	grid-gap: 1rem;
+	grid-template-columns: 2fr 5fr 1fr;
+	margin: 1rem 0;
+	padding: 1rem;
+
+	&:hover {
+		background-color: rgba(200, 200, 200, 0.2);
+	}
+}
+
+.niztech-youtube-btn {
+	background-color: #dedede;
+	border: 1px solid #888888;
+	padding: 0.5rem;
+}
+
+.niztech-youtube-btn.niztech-youtube-btn-primary {
+	background-color: #15343e;
+	border: 1px solid #13313a;
+	color: #ffffff;
+}
+
+.niztech-youtube-label {
+	font-size: 1rem;
+}

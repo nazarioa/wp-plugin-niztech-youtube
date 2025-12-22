@@ -1,13 +1,13 @@
 {
-    "name": "niztech/youtube-php-scoper",
-    "require": {
-        "humbug/php-scoper": "^0.18.18",
-        "sniccowp/php-scoper-wordpress-excludes": "^6.8"
-    },
-    "authors": [
-        {
-            "name": "Nazario A. Ayala",
-            "email": "nazario@niztech.com"
-        }
-    ]
+	"name": "niztech/youtube-php-scoper",
+	"require": {
+		"humbug/php-scoper": "^0.18.18",
+		"sniccowp/php-scoper-wordpress-excludes": "^6.8"
+	},
+	"authors": [
+		{
+			"name": "Nazario A. Ayala",
+			"email": "nazario@niztech.com"
+		}
+	]
 }
