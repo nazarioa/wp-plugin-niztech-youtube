@@ -11,7 +11,7 @@
  * Plugin Name: Niztech - YouTube
  * Plugin URI: https://www.niztech.com
  * Description: Simple YouTube data source
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Niztech
  * Author URI: https://www.niztech.com
  */
@@ -27,7 +27,7 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.1.0' );
+define( 'NT_YOUTUBE_PLUGIN_VERSION', '1.1.1' );
 define( 'NT_YOUTUBE_DATABASE_VERSION', 2 );
 define( 'NT_YOUTUBE__MINIMUM_WP_VERSION', '4.0' );
 define( 'NT_YOUTUBE__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
