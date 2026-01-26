@@ -36,7 +36,7 @@ composer install --quiet
 
 echo "5 of 7) Running php-scoper";
 # Run PHPScoper (adds a prefix to namespaces of dependencies) so that we avoid collision
-./vendor/humbug/php-scoper/bin/php-scoper add-prefix -s -q --config ./scoper.inc.php
+./vendor/humbug/php-scoper/bin/php-scoper add-prefix --config ./scoper.inc.php
 
 echo "6 of 7) Zipping";
 cd ../dist || exit

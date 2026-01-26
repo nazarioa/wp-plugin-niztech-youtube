@@ -42,12 +42,21 @@
 			"vendor/bin/phpcbf",
 			"./node_modules/.bin/prettier . --write"
 		],
-		"build-prod": "./build.sh",
-		"build-dev": "composer install"
+		"build-prod": [
+			"composer run pre-autoload-dump",
+			"./build.sh"
+		],
+		"build-dev": "composer install",
+		"pre-autoload-dump": "Google\\Task\\Composer::cleanup"
 	},
 	"autoload": {
 		"psr-4": {
 			"Niztech\\Niztech_Youtube\\": "*"
 		}
+	},
+	"extra": {
+		"google/apiclient-services": [
+			"YouTube"
+		]
 	}
 }
